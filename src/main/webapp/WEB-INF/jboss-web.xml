@@ -1,0 +1,3 @@
+<jboss-web>
+    <context-root>p6</context-root>
+</jboss-web>

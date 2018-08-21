@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE USER p6 WITH ENCRYPTED PASSWORD 'p6';
+    CREATE DATABASE p6;
+    GRANT ALL PRIVILEGES ON DATABASE p6 TO p6;
+EOSQL
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE USER db_diff WITH ENCRYPTED PASSWORD 'db_diff';
+    CREATE DATABASE db_diff;
+    GRANT ALL PRIVILEGES ON DATABASE db_diff TO db_diff;
+EOSQL

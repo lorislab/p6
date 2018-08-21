@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  wait:
+    image: waisbrot/wait
+    depends_on:
+     - postgresdb
+    environment:
+     - TARGETS=postgresdb:5432
+    networks:
+     - p6
+     
+  p6:
+    container_name: p6
+    image: lorislab/p6
+    environment:
+        DB_URL: jdbc:postgresql://postgresdb:5432/p6
+        DB_USER: p6
+        DB_PWD: p6    
+    ports: 
+        - "8080:8080"    
+    networks:
+     - p6
+    depends_on:
+        - wait
+        
+  postgresdb:
+    image: postgres:10.5
+    container_name: postgresdb
+    ports: 
+        - "5432:5432"
+    volumes:
+        - dbvolume:/var/lib/postgresql/data
+        - ./docker-entrypoint-initdb.d/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    environment:
+       POSTGRES_PASSWORD: p6
+    networks:
+     - p6     
+     
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: p6@lorislab.org
+      PGADMIN_DEFAULT_PASSWORD: p6
+    ports: 
+        - "8090:80"   
+    volumes:
+        - pgvolume:/var/lib/pgadmin
+    networks:
+     - p6
+    depends_on:
+        - wait     
+        
+volumes:
+  dbvolume: null
+  pgvolume: null
+  
+networks:
+    p6:
