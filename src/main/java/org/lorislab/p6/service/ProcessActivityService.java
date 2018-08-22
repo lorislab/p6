@@ -13,28 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.runtime.service;
+package org.lorislab.p6.service;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import org.lorislab.jee.jpa.service.AbstractEntityService;
+import org.lorislab.p6.model.ProcessActivity;
 /**
  *
  * @author andrej
  */
-@MessageDriven(name = "ActivityExecutorService",
-        activationConfig = {
-            @ActivationConfigProperty(propertyName = "useJNDI", propertyValue = "false"),
-            @ActivationConfigProperty(propertyName = "destination", propertyValue = "p6.activity")
-        }
-)
-public class ActivityExecutorService implements MessageListener {
-
-    @Override
-    public void onMessage(Message message) {
-        System.out.println(message);
-    }
+@Stateless
+@TransactionAttribute(TransactionAttributeType.NEVER)
+public class ProcessActivityService extends AbstractEntityService<ProcessActivity, String> {
     
 }
