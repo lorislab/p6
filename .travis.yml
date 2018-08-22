@@ -1,5 +1,9 @@
 language: java
 
+env:
+  global:
+   - secure: "D69O3Ujw21aGcVCjQTzpGmn0Oew6yOo0Eu+gfH0dmmaPi8XUKsAwx7x8c8F4beYhunDQr7JWIh1TjvFcJy6+4+pLsMkI74l3Zl+4v/TxEv+L2l4VBLDrDbsCxQOLyxP/MZfXzEQH7gPs6+ouPqbrn8rGp99pndzhot8bxPKYc4akL3PDvf80WtA5KcYwOZbhcgw2qXZMl3QzeSZJfIdZs2/iH0rRPQXOClwjMFebsb/rOdpRV7cSibSkrQJEs+V/RPLVHfNfSfzeZGZ/iBDJlPE+bcSdsVBqejPHKWdm5Lgzb62lGi9Pfnc8WoFKGJ9sYoSBHgBeNoJfwF7OnfLNHdrRSdf9UOFHOGBw+a0nAY83vmPcNALbi3AhGr5HE59gE39UFMRtv+WQ1Uxubv0KOwVhZY1M2JRLlDyaWzSSkUFUVUkbaFwzYOkHjoWlu7PRAN80OYRLQMTkU4K2M2JfkrAcY4P8N1jTriGa2np0hOJS6rXH+DREFM91Lm6gV9Pr2UkgEgYj/DAFlttn0MgX3wlXCdFEsrIfVBN4EF4O4kWWXmo33qmgRNbshOrgQsmIT3LRrWVwlcJyFR3uEXS/BjwrWQruwUbY26tKoZKGot9j//KGONAWXWaTvbC3lqmJVrd3P2o9Q/n5i2XTlLyxRL+CCm1/VBPAblJmnBHF7ng="
+
 jdk:
   - oraclejdk8
   
@@ -9,3 +13,6 @@ cache:
   
 install: 
   - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+
+after_success:
+  - mvn test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN

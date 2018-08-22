@@ -35,18 +35,9 @@ import org.lorislab.p6.service.ProcessTokenService;
 )
 public class ExecutionService implements MessageListener {
 
-    @EJB
-    private ProcessTokenService  tokenService;
-    
     @Override
     public void onMessage(Message message) {
-        try {
-            String guid = message.getBody(String.class);
-            ProcessToken token = tokenService.findByGuid(guid);
-            
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        System.out.println(message);
     }
 
 }

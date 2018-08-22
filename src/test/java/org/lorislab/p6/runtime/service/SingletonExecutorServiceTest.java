@@ -1,28 +1,22 @@
-package org.lorislab.p6.service;
+package org.lorislab.p6.runtime.service;
 
 import java.util.UUID;
-import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
-import javax.jms.JMSProducer;
 import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.jms.ConnectionFactory;
-import javax.jms.Message;
 import javax.jms.Queue;
-import javax.jms.TextMessage;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lorislab.p6.test.AbstractTest;
 
 @RunWith(Arquillian.class)
-public class ActivityExecutorServiceTest extends AbstractTest {
+public class SingletonExecutorServiceTest extends AbstractTest {
 
     @Inject
     private JMSContext context;
 
-    @Resource(lookup = "java:/jms/queue/p6.activity")
+    @Resource(lookup = "java:/jms/queue/p6.singleton")
     private Queue queue;
 
     @Test
