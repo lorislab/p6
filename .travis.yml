@@ -11,8 +11,10 @@ cache:
   directories:
   - $HOME/.m2
   
-install: 
-  - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+install: true
+
+script: 
+    - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
 
 after_success:
   - mvn test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
