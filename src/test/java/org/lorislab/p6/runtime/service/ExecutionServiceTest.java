@@ -8,10 +8,9 @@ import javax.jms.Queue;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.lorislab.p6.test.AbstractTest;
 
 @RunWith(Arquillian.class)
-public class ExecutionServiceTest extends AbstractTest {
+public class ExecutionServiceTest {
 
     @Inject
     private JMSContext context;

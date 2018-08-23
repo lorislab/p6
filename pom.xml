@@ -269,6 +269,9 @@
                         <server-config>standalone-full.xml</server-config>                             
                     </systemPropertyVariables>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <includes>
+                        <include>**/test/*Test.java</include>
+                    </includes>
                 </configuration>  
                 <dependencies>
                     <dependency>

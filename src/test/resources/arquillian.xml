@@ -12,9 +12,8 @@
         </configuration>
     </container>
     <defaultProtocol type="Servlet 3.0"/>
-    <!--extension qualifier="persistence">
+    <extension qualifier="persistence">
         <property name="defaultDataSource">jdbc/arquillian</property>
-    </extension-->
-    
+    </extension>
 </arquillian>
 

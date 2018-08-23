@@ -1,18 +1,18 @@
 package org.lorislab.p6.test;
 
 import java.io.File;
+import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
-import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.lorislab.p6.rs.JaxrsApplication;
 
 
 @ArquillianSuiteDeployment
-public class AbstractTest {
+public class DeploymentConfig {
 
     private static final String WEBAPP_SRC = "src/main/webapp";
 
