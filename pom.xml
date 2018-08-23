@@ -19,7 +19,7 @@
     </properties>
     
     <organization>
-        <name>lorislab</name>
+        <name>lorislab.org</name>
         <url>http://www.lorislab.org</url>
     </organization>
 
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-        </dependency>  
+        </dependency>
         
         <!-- to get around bug https://github.com/junit-team/junit5/issues/1367 -->
         <dependency>

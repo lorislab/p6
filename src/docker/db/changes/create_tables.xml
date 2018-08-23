@@ -58,7 +58,7 @@
             </column>
             <column name="C_OPLOCK" type="INTEGER"/>
             <column name="CONTENT" type="BYTEA"/>
-            <column name="parent" type="VARCHAR(255)"/>
+            <column name="PARENT" type="VARCHAR(255)"/>
             <column name="INSTANCE" type="BIGINT"/>
         </createTable>
     </changeSet>
