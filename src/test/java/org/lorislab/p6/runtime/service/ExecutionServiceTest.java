@@ -8,6 +8,7 @@ import javax.jms.Queue;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lorislab.p6.test.DeploymentConfig;
 
 @RunWith(Arquillian.class)
 public class ExecutionServiceTest {
@@ -15,7 +16,7 @@ public class ExecutionServiceTest {
     @Inject
     private JMSContext context;
 
-    @Resource(lookup = "java:/jms/queue/p6.execution")
+    @Resource(lookup = DeploymentConfig.QUEUE_EXECUTION_JNDI)
     private Queue queue;
 
     @Test

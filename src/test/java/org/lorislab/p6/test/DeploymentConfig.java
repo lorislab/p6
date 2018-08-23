@@ -14,6 +14,12 @@ import org.lorislab.p6.rs.JaxrsApplication;
 @ArquillianSuiteDeployment
 public class DeploymentConfig {
 
+    public static final String QUEUE_ACTIVITY_JNDI = "java:/jms/queue/p6.activity";
+    
+    public static final String QUEUE_EXECUTION_JNDI = "java:/jms/queue/p6.execution";
+    
+    public static final String QUEUE_SINGLETON_JNDI = "java:/jms/queue/p6.singleton";
+    
     private static final String WEBAPP_SRC = "src/main/webapp";
 
     public static WebArchive createArchive() {
