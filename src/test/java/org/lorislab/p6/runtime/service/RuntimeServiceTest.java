@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.test;
+package org.lorislab.p6.runtime.service;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.lorislab.p6.deployment.DeploymentServiceTest;
 
 /**
  *
@@ -25,8 +24,10 @@ import org.lorislab.p6.deployment.DeploymentServiceTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    DeploymentServiceTest.class
+    ActivityExecutorServiceServerTest.class, 
+    ExecutionServiceServerTest.class,
+    SingletonExecutorServiceServerTest.class
 })
-public class DeploymentTest {
+public class RuntimeServiceTest {
     
 }

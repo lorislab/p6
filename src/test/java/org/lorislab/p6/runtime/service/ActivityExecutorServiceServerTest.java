@@ -26,12 +26,12 @@ import org.junit.runner.RunWith;
 import org.lorislab.p6.test.DeploymentConfig;
 
 @RunWith(Arquillian.class)
-public class SingletonExecutorServiceTest {
+public class ActivityExecutorServiceServerTest {
 
     @Inject
     private JMSContext context;
 
-    @Resource(lookup = DeploymentConfig.QUEUE_SINGLETON_JNDI)
+    @Resource(lookup = DeploymentConfig.QUEUE_ACTIVITY_JNDI)
     private Queue queue;
 
     @Test

@@ -35,6 +35,8 @@ public class DeploymentConfig {
     
     public static final String QUEUE_SINGLETON_JNDI = "java:/jms/queue/p6.singleton";
     
+    public static final String BPMN_RESOURCE_DIR = "src/test/resources/bpmn";
+    
     private static final String WEBAPP_SRC = "src/main/webapp";
 
     public static WebArchive createArchive() {

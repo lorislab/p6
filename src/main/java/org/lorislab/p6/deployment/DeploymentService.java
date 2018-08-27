@@ -44,7 +44,7 @@ public class DeploymentService {
     @EJB
     private ModelSerializerService serializer;
     
-    private DefaultBpmnReader reader = new DefaultBpmnReader();
+    private final DefaultBpmnReader reader = new DefaultBpmnReader();
             
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public long deploy(Definitions definitions) throws ServiceException {
