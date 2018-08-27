@@ -44,10 +44,10 @@ public class ProcessContent extends Persistent {
     @Column(name = "PROCESS_VERSION")
     private String processVersion;
     
-    @Column(name = "XML")
+    @Column(name = "XML", length = 5000)
     private byte[] xml;
     
-    @Column(name = "FLOW")
+    @Column(name = "FLOW", length = 5000)
     private byte[] flow;
     
 }

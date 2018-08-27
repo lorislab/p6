@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import org.lorislab.jee.jpa.service.AbstractEntityService;
-import org.lorislab.p6.model.ProcessInstance;
+package org.lorislab.p6.rs;
 
 /**
  *
  * @author andrej
  */
-@Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class ProcessInstanceService extends AbstractEntityService<ProcessInstance, Long> {
+public enum ModelSerializerErrors {
+
+    ERROR_DEFINITIONS_TO_BYTE,
+    ERROR_OBJECT_TO_BYTE,
+    ERROR_OBJECT_FROM_BYTE,
     
 }

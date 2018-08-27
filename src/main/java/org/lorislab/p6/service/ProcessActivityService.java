@@ -25,7 +25,7 @@ import org.lorislab.p6.model.ProcessActivity;
  * @author andrej
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NEVER)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProcessActivityService extends AbstractEntityService<ProcessActivity, String> {
     
 }

@@ -29,8 +29,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Providers;
+import org.lorislab.jee.exception.ServiceException;
 import org.lorislab.p6.model.ProcessContent;
 import org.lorislab.p6.model.ProcessDefinition;
+import org.lorislab.p6.rs.ModelSerializerService;
 import org.lorislab.p6.runtime.model.RuntimeProcess;
 import org.lorislab.p6.service.ProcessDefinitionService;
 
@@ -42,13 +44,13 @@ import org.lorislab.p6.service.ProcessDefinitionService;
 @Startup
 public class ExecutionStartService {
 
-    @Context
-    protected Providers providers;
+    @EJB
+    private ModelSerializerService serializer;
         
     @EJB
     private ProcessDefinitionService service;
 
-    private Map<String, RuntimeProcess> processes = new ConcurrentHashMap<>();
+    private final Map<String, RuntimeProcess> processes = new ConcurrentHashMap<>();
     
     @PostConstruct
     public void start() {
@@ -57,14 +59,11 @@ public class ExecutionStartService {
             if (defs != null) {
                 for (ProcessDefinition def : defs) {
                     ProcessContent content = def.getContents().iterator().next();
-                    MessageBodyReader<RuntimeProcess> mbw = providers.getMessageBodyReader(RuntimeProcess.class, null, null, MediaType.APPLICATION_JSON_TYPE);
-                    try (InputStream stream = new ByteArrayInputStream(content.getFlow())) {
-                        RuntimeProcess rp = mbw.readFrom(RuntimeProcess.class, null, null, MediaType.APPLICATION_JSON_TYPE, null, stream);
-                        processes.put(def.getId(), rp);
-                    }
+                    RuntimeProcess rp = serializer.fromByte(content.getFlow(), RuntimeProcess.class);
+                    processes.put(def.getId(), rp);
                 }
             }
-        } catch (Exception ex) {
+        } catch (ServiceException ex) {
             ex.printStackTrace();
         }
     }

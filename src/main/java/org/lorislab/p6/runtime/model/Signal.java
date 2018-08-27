@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
+package org.lorislab.p6.runtime.model;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import org.lorislab.jee.jpa.service.AbstractEntityService;
-import org.lorislab.p6.model.ProcessInstance;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author andrej
  */
-@Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class ProcessInstanceService extends AbstractEntityService<ProcessInstance, Long> {
+@Getter
+@Setter
+@ToString
+public class Signal {
     
+    private String id;
+    
+    private String name;
 }

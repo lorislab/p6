@@ -25,7 +25,7 @@ import org.lorislab.p6.model.ProcessToken;
  * @author andrej
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NEVER)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProcessTokenService extends AbstractEntityService<ProcessToken, String> {
     
 }

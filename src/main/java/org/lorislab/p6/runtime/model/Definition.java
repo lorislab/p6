@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.test;
+package org.lorislab.p6.runtime.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.lorislab.p6.runtime.service.ActivityExecutorServiceTest;
-import org.lorislab.p6.runtime.service.ExecutionServiceTest;
-import org.lorislab.p6.runtime.service.SingletonExecutorServiceTest;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author andrej
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ActivityExecutorServiceTest.class, 
-    ExecutionServiceTest.class,
-    SingletonExecutorServiceTest.class
-})
-public class RuntimeServiceTest {
+@Getter
+@Setter
+@ToString
+public class Definition {
     
+    private String id;
+    
+    private String name;
+    
+    private String exporter;
 }

@@ -33,7 +33,7 @@ import org.lorislab.p6.model.ProcessDefinition_;
  * @author andrej
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NEVER)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProcessDefinitionService extends AbstractEntityService<ProcessDefinition, Long> {
 
     public ProcessDefinition loadById(String id) throws ServiceException {

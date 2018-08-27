@@ -26,7 +26,7 @@ import org.lorislab.p6.model.ProcessContent;
  * @author andrej
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NEVER)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProcessContentService extends AbstractEntityService<ProcessContent, String> {
     
 }

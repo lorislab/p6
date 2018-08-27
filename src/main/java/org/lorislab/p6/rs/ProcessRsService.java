@@ -30,7 +30,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Providers;
 import org.lorislab.p6.model.ProcessInstance;
 import org.lorislab.p6.model.ProcessToken;
@@ -48,9 +47,6 @@ import org.lorislab.p6.service.ProcessInstanceService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProcessRsService {
     
-    @Context
-    protected Providers providers;
-    
     @Inject
     private JMSContext context;
  
@@ -63,17 +59,14 @@ public class ProcessRsService {
     @EJB
     private ProcessInstanceService piService;
     
+    @EJB
+    private ModelSerializerService serializer;
+    
     @POST
     @Path("{id}/start")
     public void startProcess(@PathParam("id") String id, Object value) throws Exception {
         
-        byte[] content;
-        MessageBodyWriter<Object> mbw = providers.getMessageBodyWriter(Object.class, null, null, MediaType.APPLICATION_JSON_TYPE);
-        try (ByteArrayOutputStream b = new ByteArrayOutputStream()) {
-            mbw.writeTo(value, value.getClass(), null, null, MediaType.APPLICATION_JSON_TYPE, null, b);
-            content = b.toByteArray();
-        }
-                
+        byte[] content = serializer.toByte(value);
         
         RuntimeProcess rp = service.getRuntimeProcess(id);
         
