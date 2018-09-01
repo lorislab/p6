@@ -15,7 +15,7 @@ cache:
 install: true
 
 script: 
-    - mvn dependency:go-offline
+    #- mvn dependency:go-offline
     - mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
 
 after_success:
