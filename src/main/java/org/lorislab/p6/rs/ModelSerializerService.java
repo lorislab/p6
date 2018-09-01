@@ -15,11 +15,12 @@
  */
 package org.lorislab.p6.rs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import javax.ejb.Stateless;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -33,8 +34,6 @@ import org.lorislab.p6.bpmn2.Definitions;
 @Stateless
 public class ModelSerializerService {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     private static JAXBContext CONTEXT;
 
     static {
@@ -47,15 +46,18 @@ public class ModelSerializerService {
 
     public <T> T fromByte(byte[] data, Class<T> clazz) throws ServiceException {
         try (InputStream stream = new ByteArrayInputStream(data)) {
-            return MAPPER.readerFor(clazz).readValue(stream);
+            Jsonb jsonb = JsonbBuilder.create();
+            return jsonb.fromJson(stream, clazz);
         } catch (Exception ex) {
             throw new ServiceException(ModelSerializerErrors.ERROR_OBJECT_FROM_BYTE, ex, clazz);
         }
     }
 
     public byte[] toByte(Object value) throws ServiceException {
-        try {
-            return MAPPER.writer().writeValueAsBytes(value);
+        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            Jsonb jsonb = JsonbBuilder.create();
+            jsonb.toJson(value, stream);
+            return stream.toByteArray();
         } catch (Exception ex) {
             throw new ServiceException(ModelSerializerErrors.ERROR_OBJECT_TO_BYTE, ex);
         }

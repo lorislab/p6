@@ -15,8 +15,8 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />   
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" /> 
-
-             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>            
+            <property name="hibernate.jpa.compliance.global_id_generators" value="false" />
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>            
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/db_diff"/>            
             <property name="javax.persistence.jdbc.user" value="db_diff"/>            
             <property name="javax.persistence.jdbc.password" value="db_diff"/>  

@@ -1,4 +1,4 @@
-FROM lorislab/wildfly:13.0.0.1 as build
+FROM lorislab/wildfly:14.0.0.1 as build
 
 RUN cd /opt/jboss/wildfly/standalone/configuration/ \
     &&  rm standalone.xml \
@@ -10,7 +10,7 @@ COPY src/docker/wildfly/config.cli /tmp/config.cli
 
 RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/config.cli
 
-FROM lorislab/wildfly:13.0.0.1
+FROM lorislab/wildfly:14.0.0.1
 
 COPY --chown=jboss:root --from=build /opt/jboss/wildfly/standalone/configuration/standalone.xml /opt/jboss/wildfly/standalone/configuration/standalone.xml
 
