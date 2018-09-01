@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mvn clean install -DtestSkip=true -Dmaven.test.skip=true
+mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
 
 docker build --tag lorislab/p6 .
 
