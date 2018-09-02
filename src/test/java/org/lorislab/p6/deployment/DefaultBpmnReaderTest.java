@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author andrej
  */
-//@RunWith(JUnitPlatform.class)
 public class DefaultBpmnReaderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBpmnReaderTest.class);

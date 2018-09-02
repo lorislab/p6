@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 lorislab.org
+ * Copyright 2018 lorislab.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.runtime.model;
+package org.lorislab.p6.rs;
 
-import java.util.HashMap;
-import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  *
  * @author andrej
  */
-@Getter
-@Setter
-@ToString(onlyExplicitlyIncluded = true)
-public class RuntimeProcess {
-    
-    @ToString.Include
-    private String id;
-    
-    @ToString.Include
-    private String name;
-    
-    private Map<String, RuntimeNode> nodes = new HashMap<>();
-    
-    private StartNode start;
-    
-    private EndNode end;
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    DeploymentRsServiceServerTest.class
+})
+public class RestServiceTest {
     
 }
