@@ -23,15 +23,15 @@ import javax.jms.Queue;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.lorislab.p6.test.DeploymentConfig;
+import org.lorislab.p6.test.Deployments;
 
 @RunWith(Arquillian.class)
-public class SingletonExecutorServiceServerTest {
+public class SingletonExecutorServiceTest {
 
     @Inject
     private JMSContext context;
 
-    @Resource(lookup = DeploymentConfig.QUEUE_SINGLETON_JNDI)
+    @Resource(lookup = Deployments.QUEUE_SINGLETON_JNDI)
     private Queue queue;
 
     @Test

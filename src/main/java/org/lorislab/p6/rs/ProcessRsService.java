@@ -15,22 +15,18 @@
  */
 package org.lorislab.p6.rs;
 
-import java.io.ByteArrayOutputStream;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.Message;
 import javax.jms.Queue;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Providers;
 import org.lorislab.p6.model.ProcessInstance;
 import org.lorislab.p6.model.ProcessToken;
 import org.lorislab.p6.runtime.model.RuntimeProcess;

@@ -27,11 +27,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.lorislab.p6.bpmn2.Definitions;
-import static org.lorislab.p6.test.DeploymentConfig.BPMN_RESOURCE_DIR;
+import static org.lorislab.p6.test.Deployments.BPMN_RESOURCE_DIR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
  * @author andrej
  */
 @RunWith(Arquillian.class)
-public class DeploymentRsServiceServerTest {
+public class DeploymentRsServiceTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentRsServiceServerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentRsServiceTest.class);
 
     @Test
     public void deployTest() throws Exception {
@@ -64,7 +64,7 @@ public class DeploymentRsServiceServerTest {
                 } catch (Exception ex) {
                     LOGGER.error("Error executing the script test for the file {}", file.toString());
                     ex.printStackTrace();
-                    Assertions.assertNull(ex, "Error executing the script test for the file " + file.toString());
+                    Assert.assertNull("Error executing the script test for the file " + file.toString(), ex);
                 }
                 return FileVisitResult.CONTINUE;
             }

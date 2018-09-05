@@ -23,11 +23,12 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.junit.Test;
 import org.lorislab.p6.rs.JaxrsApplication;
 
 
 @ArquillianSuiteDeployment
-public class DeploymentConfig {
+public class Deployments {
 
     public static final String QUEUE_ACTIVITY_JNDI = "java:/jms/queue/p6.activity";
     
@@ -43,10 +44,12 @@ public class DeploymentConfig {
 
         File[] libsCache = Maven.resolver().loadPomFromFile("pom.xml").importCompileAndRuntimeDependencies()
                 .addDependency(MavenDependencies.createDependency("io.rest-assured:rest-assured", RUNTIME, false))
-                .addDependency(MavenDependencies.createDependency("org.dbunit:dbunit:2.5.4", RUNTIME, false))
-                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi:3.14", RUNTIME, false))
-                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi-ooxml:3.14", RUNTIME, false))
-                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi-ooxml-schemas:3.14", RUNTIME, false))
+//                .addDependency(MavenDependencies.createDependency("org.dbunit:dbunit:2.5.4", RUNTIME, false))
+//                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi:3.14", RUNTIME, false))
+//                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi-ooxml:3.14", RUNTIME, false))
+//                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi-ooxml-schemas:3.14", RUNTIME, false))
+//                .addDependency(MavenDependencies.createDependency("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:2.2.6", RUNTIME, false))
+//                .addDependency(MavenDependencies.createDependency("org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:2.2.6", RUNTIME, false))
                 .resolve().withTransitivity().asFile();
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "p6.war")
@@ -65,7 +68,7 @@ public class DeploymentConfig {
     }
 
     @Deployment
-    public static WebArchive createDeployment() {
+    public static WebArchive deploy() {
         WebArchive war = createArchive().addPackages(true, "org.lorislab.p6");
         return war;
     }

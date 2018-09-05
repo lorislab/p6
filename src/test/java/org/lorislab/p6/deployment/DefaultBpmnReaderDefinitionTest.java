@@ -23,14 +23,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import javax.ejb.EJB;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
-import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.lorislab.p6.bpmn2.Definitions;
+import org.lorislab.p6.bpmn2.TProcess;
+import org.lorislab.p6.bpmn2.TRootElement;
+import org.lorislab.p6.runtime.model.Definition;
+import org.lorislab.p6.runtime.model.RuntimeProcess;
 import static org.lorislab.p6.test.Deployments.BPMN_RESOURCE_DIR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,33 +48,43 @@ import org.slf4j.LoggerFactory;
  *
  * @author andrej
  */
-@RunWith(Arquillian.class)
-public class DeploymentServiceTest {
+@RunWith(Parameterized.class)
+public class DefaultBpmnReaderDefinitionTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentServiceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBpmnReaderDefinitionTest.class);
 
-    @EJB
-    private DeploymentService service;
-
-    @Test
-    public void deployTest() throws Exception {
+    @Parameters
+    public static Iterable<? extends Object> data() throws Exception {
+        List<Path> result = new ArrayList<>();
         Files.walkFileTree(Paths.get(BPMN_RESOURCE_DIR), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                try {
-                    LOGGER.info("Start deployment for process: {}", file.toString());
-                    Definitions definitions = loadDefinitions(file.toFile());
-                    long process = service.deploy(definitions);
-                    LOGGER.info("Process deploy: {} id: {}", file, process);
-                } catch (Exception ex) {
-                    LOGGER.error("Error executing the script test for the file {}", file.toString());
-                    ex.printStackTrace();
-                    Assert.assertNull("Error executing the script test for the file " + file.toString(), ex);
-                }
+                result.add(file);
                 return FileVisitResult.CONTINUE;
             }
-
         });
+        return result;
+    }
+
+    @Parameter
+    public Path file;
+
+    @Test
+    public void createDefinitionTest() throws Exception {
+        try {
+            LOGGER.info("Load definitions: {}", file.toString());
+            Definitions definitions = loadDefinitions(file.toFile());
+            DefaultBpmnReader reader = new DefaultBpmnReader();
+            Definition def = reader.create(definitions);
+
+            Assert.assertEquals(def.getId(), definitions.getId());
+            Assert.assertEquals(def.getName(), definitions.getName());
+            // FIXME: Write the test case for the definition runtime model.
+        } catch (Exception ex) {
+            LOGGER.error("Error executing the script test for the file {}", file.toString());
+            ex.printStackTrace();
+            Assert.assertNull("Error executing the script test for the file " + file.toString(), ex);
+        }
     }
 
     private static Definitions loadDefinitions(File file) throws Exception {

@@ -13,9 +13,6 @@
         <wildfly.version>14.0.0.Beta2</wildfly.version>
         <jbossTarget>${basedir}/target/</jbossTarget>
         <org.hibernate.version>5.0.1.Final</org.hibernate.version>
-        
-        <version.junit.platform>1.2.0</version.junit.platform>
-        <version.junit>5.2.0</version.junit>       
     </properties>
     
     <organization>
@@ -101,36 +98,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${version.junit}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>${version.junit.platform}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>${version.junit.platform}</version>
-            <scope>test</scope>
-        </dependency> 
-        
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-managed</artifactId>
@@ -176,15 +148,6 @@
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
             <scope>test</scope>
         </dependency>
-        
-        <!-- to get around bug https://github.com/junit-team/junit5/issues/1367 -->
-        <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-logger-api</artifactId>
-            <version>2.22.0</version>
-            <scope>test</scope>
-            <optional>true</optional>
-        </dependency>                      
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>
@@ -270,30 +233,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
                 <configuration>
-                    <forkMode>always</forkMode>
-                    <systemPropertyVariables>
-                        <arquillian.launch>wildfly-managed</arquillian.launch>
-                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>     
-                        <jboss.home>${jbossTarget}/${wildfly.version}</jboss.home>    
-                        <server-config>standalone-full.xml</server-config>                             
-                    </systemPropertyVariables>
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                    <excludes>
-                        <exclude>**/*ServerTest.java</exclude>
-                    </excludes>
-                </configuration>  
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${version.junit.platform}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${version.junit}</version>
-                    </dependency>
-                </dependencies>                             
+                </configuration>                             
             </plugin>              
         </plugins>
         <pluginManagement>

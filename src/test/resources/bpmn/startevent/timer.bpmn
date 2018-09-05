@@ -4,7 +4,9 @@
     <startEvent id="_3" isInterrupting="true" name="Start Event" parallelMultiple="false">
       <outgoing>_6</outgoing>
       <outputSet/>
-      <timerEventDefinition id="_3_ED_1"/>
+      <timerEventDefinition id="_3_ED_1">
+        <timeDuration><![CDATA[PT5S]]></timeDuration>
+      </timerEventDefinition>
     </startEvent>
     <sequenceFlow id="_6" sourceRef="_3" targetRef="_5"/>
     <endEvent id="_5" name="End Event">
