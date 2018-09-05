@@ -4,7 +4,7 @@
 
     <container qualifier="wildfly-managed" default="true">
         <configuration>
-            <property name="jbossHome">target/wildfly-14.0.0.Beta2/</property>
+            <property name="jbossHome">target/wildfly-14.0.0.Final/</property>
             <property name="outputToConsole">true</property>
             <property name="javaVmArguments">-Djboss.socket.binding.port-offset=10000</property>
             <property name="managementPort">19990</property>

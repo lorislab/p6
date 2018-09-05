@@ -10,7 +10,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         
-        <wildfly.version>14.0.0.Beta2</wildfly.version>
+        <wildfly.version>14.0.0.Final</wildfly.version>
         <jbossTarget>${basedir}/target/</jbossTarget>
         <org.hibernate.version>5.0.1.Final</org.hibernate.version>
     </properties>
