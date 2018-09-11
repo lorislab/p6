@@ -19,11 +19,13 @@ package org.lorislab.p6.flow.events;
  *
  * @author andrej
  */
-public enum StartEventType {
+public class StartMessageEvent extends StartEvent<MessageEventDefinition> {
     
-    NONE,
+    public StartMessageEvent() {
+        super(StartEventType.MESSAGE);
+    }
     
-    MESSAGE,
-    
-    TIMER;
+    public StartMessageEvent(MessageEventDefinition message) {
+        super(StartEventType.MESSAGE, message);
+    }    
 }

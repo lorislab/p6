@@ -15,11 +15,32 @@
  */
 package org.lorislab.p6.flow.events;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
+ * @param <E> the event definition.
+ * 
  * @author andrej
  */
-public class CatchEvent extends Event {
-    
+@Getter
+@Setter
+public class CatchEvent<E extends EventDefinition> extends Event<E> {
+
+    /**
+     * This attribute is only relevant when the catch Event has more than
+     * EventDefinition (Multiple). If this value is true , then all of the types
+     * of triggers that are listed in the catch Event MUST be triggered before
+     * the Process is instantiated.
+     */
     private boolean parallelMultiple = false;
+
+    public CatchEvent(EventType type) {
+        super(type);
+    }
+
+    public CatchEvent(EventType type, E definition) {
+        super(type, definition);
+    }
 }

@@ -18,7 +18,7 @@ package org.lorislab.p6.flow.service;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import org.lorislab.p6.flow.common.ErrorDef;
+import org.lorislab.p6.flow.common.ErrorDefinition;
 import org.lorislab.p6.flow.common.Message;
 
 /**
@@ -41,17 +41,17 @@ public class Operation {
      * This attribute specifies the input Message of the Operation. An Operation
      * has exactly one input Message.
      */
-    private Message inMessageRef;
+    private Message inMessage;
 
     /**
      * This attribute specifies the output Message of the Operation. An
      * Operation has at most one input Message.
      */
-    private Message outMessageRef;
+    private Message outMessage;
 
     /**
      * This attribute specifies errors that the Operation may return. An
      * Operation MAY refer to zero or more Error elements.
      */
-    private List<ErrorDef> errorRef;
+    private List<ErrorDefinition> errors;
 }

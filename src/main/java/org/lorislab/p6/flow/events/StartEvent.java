@@ -19,16 +19,38 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * The start event.
+ *
+ * @param <E> the event definition.
  *
  * @author andrej
  */
 @Getter
 @Setter
-public class StartEvent extends CatchEvent {
-    
+public class StartEvent<E extends EventDefinition> extends CatchEvent<E> {
+
+    /**
+     * This attribute only applies to Start Events of Event Sub-Processes ; it
+     * is ignored for other Start Events. This attribute denotes whether the
+     * Sub-Process encompassing the Event Sub-Process should be cancelled or
+     * not, If the encompassing Sub- Process is not cancelled, multiple
+     * instances of the Event Sub-Process can run concurrently. This attribute
+     * cannot be applied to Error Events (where it’s always true), or
+     * Compensation Events (where it doesn’t apply).
+     */
     private boolean isInterrupting = true;
-    
-    private StartEventType type = StartEventType.NONE;
-    
-    private TimerEventDefinition timerEventDefinition;
+
+    /**
+     * The type of the start event.
+     */
+    private StartEventType startType;
+
+    public StartEvent(StartEventType startType) {
+        this(startType, null);
+    }
+
+    public StartEvent(StartEventType startType, E event) {
+        super(EventType.START, event);
+        this.startType = startType;
+    }
 }

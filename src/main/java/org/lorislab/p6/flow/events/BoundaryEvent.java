@@ -19,24 +19,27 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * The boundary event definition.
+ *
+ * Reference to the definition on the page 257 Boundary Event Definition
  *
  * @author andrej
- * @param <E>
  */
 @Getter
 @Setter
-public class Event<E extends EventDefinition> {
-    
-    private EventType type;
+public class BoundaryEvent extends CatchEvent {
 
-    private E definition;
+    /**
+     * Denotes whether the Activity should be cancelled or not, i.e., whether
+     * the boundary catch Event acts as an Error or an Escalation. If the
+     * Activity is not cancelled, multiple instances of that handler can run
+     * concurrently. This attribute cannot be applied to Error Events (where
+     * it’s always true), or Compensation Events (where it doesn’t apply).
+     */
+    private boolean cancelActivity;
     
-    public Event(EventType type) {
-        this.type = type;
+    public BoundaryEvent() {
+        super(EventType.BOUNDARY);
     }
-        
-    public Event(EventType type, E definition) {
-        this.type = type;
-        this.definition = definition;
-    }    
+
 }

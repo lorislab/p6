@@ -35,11 +35,11 @@ public class MessageEventDefinition extends EventDefinition {
      * The Message MUST be supplied (if the isExecutable attribute of the
      * Process is set to true).
      */
-    private Message messageRef;
+    private Message message;
 
     /**
      * This attribute specifies the Operation that is used by the Message Event.
      * It MUST be specified for executable Processes.
      */
-    private Operation operationRef;
+    private Operation operation;
 }

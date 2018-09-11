@@ -37,5 +37,5 @@ public class Message {
     /**
      * An ItemDefinition is used to define the “payload” of the Message.
      */
-    private ItemDefinition itemRef;
+    private ItemDefinition item;
 }

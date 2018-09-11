@@ -27,7 +27,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ErrorDef {
+public class ErrorDefinition {
 
     /**
      * The descriptive name of the Error.
@@ -54,5 +54,5 @@ public class ErrorDef {
     /**
      * An ItemDefinition is used to define the “payload” of the Error.
      */
-    protected ItemDefinition structureRef;
+    protected ItemDefinition structure;
 }

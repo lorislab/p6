@@ -19,11 +19,13 @@ package org.lorislab.p6.flow.events;
  *
  * @author andrej
  */
-public enum StartEventType {
+public class StartTimerEvent extends StartEvent<TimerEventDefinition> {
     
-    NONE,
+    public StartTimerEvent() {
+        super(StartEventType.TIMER);
+    }
     
-    MESSAGE,
-    
-    TIMER;
+    public StartTimerEvent(TimerEventDefinition timer) {
+        super(StartEventType.TIMER, timer);
+    }    
 }

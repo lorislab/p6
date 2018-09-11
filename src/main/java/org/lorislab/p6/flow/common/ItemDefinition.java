@@ -44,5 +44,5 @@ public class ItemDefinition {
     /**
      * The concrete data structure to be used.
      */
-    private String structureRef;
+    private String structure;
 }

@@ -24,6 +24,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EndEvent extends Event {
+public class EndEvent extends ThrowEvent {
+
+    public EndEvent() {
+        super(EventType.END);
+    }
     
 }

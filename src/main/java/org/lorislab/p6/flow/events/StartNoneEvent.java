@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.flow;
-
-import org.lorislab.p6.flow.events.Event;
-import lombok.Getter;
-import lombok.Setter;
+package org.lorislab.p6.flow.events;
 
 /**
  *
  * @author andrej
  */
-@Getter
-@Setter
-public class IntermediateEvent extends Event {
+public class StartNoneEvent extends StartEvent<EventDefinition> {
+    
+    public StartNoneEvent() {
+        super(StartEventType.NONE);
+    }
+
+    @Override
+    public void setDefinition(EventDefinition definition) {
+        // empty method
+    }
     
 }

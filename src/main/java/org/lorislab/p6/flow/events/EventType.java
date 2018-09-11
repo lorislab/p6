@@ -19,11 +19,17 @@ package org.lorislab.p6.flow.events;
  *
  * @author andrej
  */
-public enum StartEventType {
+public enum EventType {
     
-    NONE,
+    INPLICIT_THROW,
     
-    MESSAGE,
+    INTERMEDIATE_THROW,
     
-    TIMER;
+    INTERMEDIATE_CATCH,
+    
+    BOUNDARY,
+    
+    START,
+    
+    END;
 }

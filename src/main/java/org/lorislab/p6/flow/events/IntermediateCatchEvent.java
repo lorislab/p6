@@ -15,15 +15,19 @@
  */
 package org.lorislab.p6.flow.events;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @author andrej
  */
-public enum StartEventType {
+@Getter
+@Setter
+public class IntermediateCatchEvent extends CatchEvent {
     
-    NONE,
+    public IntermediateCatchEvent() {
+        super(EventType.INTERMEDIATE_CATCH);
+    }
     
-    MESSAGE,
-    
-    TIMER;
 }
