@@ -23,7 +23,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.RUNTIME;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.junit.Test;
 import org.lorislab.p6.rs.JaxrsApplication;
 
 

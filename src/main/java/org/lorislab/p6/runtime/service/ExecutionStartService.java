@@ -15,8 +15,6 @@
  */
 package org.lorislab.p6.runtime.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import java.util.List;
 import java.util.Map;
@@ -25,10 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.Providers;
 import org.lorislab.jee.exception.ServiceException;
 import org.lorislab.p6.model.ProcessContent;
 import org.lorislab.p6.model.ProcessDefinition;
