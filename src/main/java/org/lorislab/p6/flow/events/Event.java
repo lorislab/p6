@@ -21,22 +21,15 @@ import lombok.Setter;
 /**
  *
  * @author andrej
- * @param <E>
  */
 @Getter
 @Setter
-public class Event<E extends EventDefinition> {
+public class Event {
     
     private EventType type;
 
-    private E definition;
-    
     public Event(EventType type) {
         this.type = type;
     }
         
-    public Event(EventType type, E definition) {
-        this.type = type;
-        this.definition = definition;
-    }    
 }

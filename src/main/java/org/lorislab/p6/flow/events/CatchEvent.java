@@ -15,18 +15,18 @@
  */
 package org.lorislab.p6.flow.events;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @param <E> the event definition.
- * 
  * @author andrej
  */
 @Getter
 @Setter
-public class CatchEvent<E extends EventDefinition> extends Event<E> {
+public class CatchEvent extends Event {
 
     /**
      * This attribute is only relevant when the catch Event has more than
@@ -36,11 +36,10 @@ public class CatchEvent<E extends EventDefinition> extends Event<E> {
      */
     private boolean parallelMultiple = false;
 
+    private final Map<String, EventDefinition> definitions = new HashMap<>();       
+    
     public CatchEvent(EventType type) {
         super(type);
     }
 
-    public CatchEvent(EventType type, E definition) {
-        super(type, definition);
-    }
 }

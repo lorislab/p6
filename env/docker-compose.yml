@@ -1,14 +1,6 @@
 version: "3"
 
 services:
-  wait:
-    image: waisbrot/wait
-    depends_on:
-     - postgresdb
-    environment:
-     - TARGETS=postgresdb:5432
-    networks:
-     - p6
      
   p6:
     container_name: p6
@@ -21,8 +13,6 @@ services:
         - "8080:8080"    
     networks:
      - p6
-    depends_on:
-        - wait
         
   postgresdb:
     image: postgres:10.5
@@ -48,9 +38,7 @@ services:
     volumes:
         - pgvolume:/var/lib/pgadmin
     networks:
-     - p6
-    depends_on:
-        - wait     
+     - p6 
         
 volumes:
   dbvolume: null

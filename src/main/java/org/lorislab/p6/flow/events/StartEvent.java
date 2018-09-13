@@ -21,13 +21,11 @@ import lombok.Setter;
 /**
  * The start event.
  *
- * @param <E> the event definition.
- *
  * @author andrej
  */
 @Getter
 @Setter
-public class StartEvent<E extends EventDefinition> extends CatchEvent<E> {
+public class StartEvent extends CatchEvent {
 
     /**
      * This attribute only applies to Start Events of Event Sub-Processes ; it
@@ -46,11 +44,7 @@ public class StartEvent<E extends EventDefinition> extends CatchEvent<E> {
     private StartEventType startType;
 
     public StartEvent(StartEventType startType) {
-        this(startType, null);
-    }
-
-    public StartEvent(StartEventType startType, E event) {
-        super(EventType.START, event);
+        super(EventType.START);
         this.startType = startType;
     }
 }
