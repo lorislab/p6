@@ -24,13 +24,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EventDefinition {
+public class Signal {
     
-    private final EventDefinitionType type;
-    
-    private String id;
-    
-    public EventDefinition(EventDefinitionType type) {
-        this.type = type;
-    }
 }

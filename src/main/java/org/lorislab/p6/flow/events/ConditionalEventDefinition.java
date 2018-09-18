@@ -24,13 +24,17 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EventDefinition {
-    
-    private final EventDefinitionType type;
-    
-    private String id;
-    
-    public EventDefinition(EventDefinitionType type) {
-        this.type = type;
+public class ConditionalEventDefinition extends EventDefinition {
+
+    /**
+     * The Expression might be underspecified and provided in the form of
+     * natural language. For executable Processes (isExecutable = true), if the
+     * trigger is Conditional, then a FormalExpression MUST be entered.
+     */
+    private String expression;
+
+    public ConditionalEventDefinition() {
+        super(EventDefinitionType.CONDITIONAL);
     }
+
 }

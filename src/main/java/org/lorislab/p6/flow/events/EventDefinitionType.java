@@ -15,22 +15,17 @@
  */
 package org.lorislab.p6.flow.events;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  *
  * @author andrej
  */
-@Getter
-@Setter
-public class EventDefinition {
+public enum EventDefinitionType {
     
-    private final EventDefinitionType type;
+    CONDITIONAL,
     
-    private String id;
+    SIGNAL, 
     
-    public EventDefinition(EventDefinitionType type) {
-        this.type = type;
-    }
+    MESSAGE,
+    
+    TIMER;
 }

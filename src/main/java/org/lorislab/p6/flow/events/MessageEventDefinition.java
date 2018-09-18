@@ -42,4 +42,9 @@ public class MessageEventDefinition extends EventDefinition {
      * It MUST be specified for executable Processes.
      */
     private Operation operation;
+
+    public MessageEventDefinition() {
+        super(EventDefinitionType.MESSAGE);
+    }
+    
 }

@@ -15,8 +15,10 @@
  */
 package org.lorislab.p6.flow;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.lorislab.p6.flow.events.StartEvent;
 
 /**
  *
@@ -24,6 +26,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Process {
+public class FlowProcess {
+    
+    private List<StartEvent> startEvents;
     
 }

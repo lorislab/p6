@@ -59,4 +59,9 @@ public class TimerEventDefinition extends EventDefinition {
      * time interval representations.
      */
     private Date timeCycle;
+
+    public TimerEventDefinition() {
+        super(EventDefinitionType.TIMER);
+    }
+    
 }

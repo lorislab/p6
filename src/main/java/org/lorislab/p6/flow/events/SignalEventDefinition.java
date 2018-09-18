@@ -24,13 +24,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EventDefinition {
+public class SignalEventDefinition extends EventDefinition {
     
-    private final EventDefinitionType type;
-    
-    private String id;
-    
-    public EventDefinition(EventDefinitionType type) {
-        this.type = type;
+    /**
+     *  If the trigger is a Signal, then a Signal is provided.
+     */
+    private Signal signal;
+
+    public SignalEventDefinition() {
+        super(EventDefinitionType.SIGNAL);
     }
+    
+    
 }

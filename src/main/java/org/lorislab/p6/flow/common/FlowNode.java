@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.flow.events;
+package org.lorislab.p6.flow.common;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,13 +24,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EventDefinition {
+public class FlowNode extends FlowElement {
     
-    private final EventDefinitionType type;
-    
-    private String id;
-    
-    public EventDefinition(EventDefinitionType type) {
-        this.type = type;
-    }
 }

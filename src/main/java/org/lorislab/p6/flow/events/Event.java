@@ -17,6 +17,7 @@ package org.lorislab.p6.flow.events;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.lorislab.p6.flow.common.FlowNode;
 
 /**
  *
@@ -24,9 +25,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Event {
+public class Event extends FlowNode {
     
-    private EventType type;
+    private final EventType type;
 
     public Event(EventType type) {
         this.type = type;

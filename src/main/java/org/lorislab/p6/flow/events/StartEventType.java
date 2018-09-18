@@ -32,10 +32,10 @@ public enum StartEventType {
      * A Message arrives from a Participant and triggers the start of the
      * Process. See page 93 for more details on Messages. If there is only one
      * EventDefinition associated with the Start Event and that EventDefinition
-     * is of the subclass MessageEventDefini- tion, then the Event is a Message
+     * is of the subclass MessageEventDefinition, then the Event is a Message
      * Start Event and MUST be displayed with an envelope marker (see the figure
      * to the right). The actual Participant from which the Message is received
-     * can be identi- fied by connecting the Event to a Participant using a
+     * can be identified by connecting the Event to a Participant using a
      * Message Flow within the definitional Collaboration of the Process.
      */
     MESSAGE,
@@ -53,12 +53,12 @@ public enum StartEventType {
      * The condition Expression for the Event MUST become false and then true
      * before the Event can be triggered again. The Condition Expression of a
      * Conditional Start Event MUST NOT refer to the data context or instance
-     * attribute of the Process (as the Proc- ess instance has not yet been
+     * attribute of the Process (as the Process instance has not yet been
      * created). Instead, it MAY refer to static Process attributes and states
-     * of entities in the environment. The specifi- cation of mechanisms to
-     * access such states is out of scope of the stan- dard. If there is only
+     * of entities in the environment. The specification of mechanisms to
+     * access such states is out of scope of the standard. If there is only
      * one EventDefinition associated with the Start Event and that
-     * EventDefinition is of the subclass ConditionalEvent- Definition, then the
+     * EventDefinition is of the subclass ConditionalEventDefinition, then the
      * Event is a Conditional Start Event and MUST be displayed with a lined
      * paper marker.
      */
@@ -69,7 +69,7 @@ public enum StartEventType {
      * which has a specific target for the Message. Multiple Processes can have
      * Start Events that are triggered from the same broadcasted Signal. If
      * there is only one EventDefinition associated with the Start Event and
-     * that EventDefinition is of the subclass SignalEventDefini- tion, then the
+     * that EventDefinition is of the subclass SignalEventDefinition, then the
      * Event is a Signal Start Event and MUST be displayed with a triangle
      * marker.
      */
