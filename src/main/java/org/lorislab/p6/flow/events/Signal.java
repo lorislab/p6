@@ -26,4 +26,7 @@ import lombok.Setter;
 @Setter
 public class Signal {
     
+    private String id;
+    
+    private String name;
 }
