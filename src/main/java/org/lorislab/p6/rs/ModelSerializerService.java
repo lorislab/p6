@@ -15,12 +15,14 @@
  */
 package org.lorislab.p6.rs;
 
-import java.io.ByteArrayInputStream;
+import com.esotericsoftware.yamlbeans.YamlReader;
+import com.esotericsoftware.yamlbeans.YamlWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import javax.ejb.Stateless;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -45,19 +47,22 @@ public class ModelSerializerService {
     }
 
     public <T> T fromByte(byte[] data, Class<T> clazz) throws ServiceException {
-        try (InputStream stream = new ByteArrayInputStream(data)) {
-            Jsonb jsonb = JsonbBuilder.create();
-            return jsonb.fromJson(stream, clazz);
+        try  {
+            YamlReader reader = new YamlReader(new StringReader(new String(data, StandardCharsets.UTF_8)));
+            T result = reader.read(clazz);
+            return result;
         } catch (Exception ex) {
             throw new ServiceException(ModelSerializerErrors.ERROR_OBJECT_FROM_BYTE, ex, clazz);
         }
     }
 
     public byte[] toByte(Object value) throws ServiceException {
-        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-            Jsonb jsonb = JsonbBuilder.create();
-            jsonb.toJson(value, stream);
-            return stream.toByteArray();
+        try {
+            Writer writer = new StringWriter();
+            YamlWriter yaml = new YamlWriter(writer);
+            yaml.write(value);
+            yaml.close();
+            return writer.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception ex) {
             throw new ServiceException(ModelSerializerErrors.ERROR_OBJECT_TO_BYTE, ex);
         }

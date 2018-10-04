@@ -43,6 +43,7 @@ public class Deployments {
 
         File[] libsCache = Maven.resolver().loadPomFromFile("pom.xml").importCompileAndRuntimeDependencies()
                 .addDependency(MavenDependencies.createDependency("io.rest-assured:rest-assured", RUNTIME, false))
+                .addDependency(MavenDependencies.createDependency("org.assertj:assertj-core", RUNTIME, false))
 //                .addDependency(MavenDependencies.createDependency("org.dbunit:dbunit:2.5.4", RUNTIME, false))
 //                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi:3.14", RUNTIME, false))
 //                .addDependency(MavenDependencies.createDependency("org.apache.poi:poi-ooxml:3.14", RUNTIME, false))
