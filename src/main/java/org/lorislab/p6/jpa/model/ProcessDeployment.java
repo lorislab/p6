@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "P6_PROCESS_DEF_CONTENT")
+@Table(name = "P6_PROCESS_DEPLOYMENT")
 public class ProcessDeployment extends PersistentTraceable {
 
     @Column(name = "PROCESS_DEF_GUID")

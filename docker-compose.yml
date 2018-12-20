@@ -9,18 +9,22 @@ services:
     environment:
         DB_URL: jdbc:postgresql://postgresdb:5432/p6
         DB_USER: p6
-        DB_PWD: p6    
+        DB_PWD: p6
+        DEBUG: "true"
+        DEBUG_PORT: "*:8787"
     ports: 
-        - "8080:8080"    
+        - "8080:8080"
+        - "8787:8787"
     networks:
      - p6
 
   # PostgresSQL database
   postgresdb:
-    image: postgres:10.5
+    image: postgres:11.1
     container_name: postgresdb
     ports: 
         - "5432:5432"
+    command: postgres -c max_prepared_transactions=100
     volumes:
         - dbvolume:/var/lib/postgresql/data
         - ./src/main/docker/db/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
@@ -42,8 +46,6 @@ services:
         - pgvolume:/var/lib/pgadmin
     networks:
      - p6
-    depends_on:
-        - wait     
         
 volumes:
   dbvolume: null

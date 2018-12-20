@@ -47,6 +47,7 @@ public class DeploymentService implements MessageListener {
     private Yaml yaml;
 
     @Inject
+    @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
 
     @EJB
@@ -88,9 +89,12 @@ public class DeploymentService implements MessageListener {
             ProcessDefinition processDefinition= new ProcessDefinition();
             processDefinition.setApplication(application);
             processDefinition.setModule(module);
+            processDefinition.setProcessId(processId);
+            processDefinition.setProcessVersion(processVersion);
             ProcessContent content = new ProcessContent();
             content.setData(data.getBytes(StandardCharsets.UTF_8));
             processDefinition.setContent(content);
+            content.setProcessDefinition(processDefinition);
 
             boolean updateDeployment = false;
             if (deployment == null) {
@@ -150,7 +154,7 @@ public class DeploymentService implements MessageListener {
      * @param storedVersion stored version in database
      * @return true only if the newVersion is greater then the stored one
      */
-    public static boolean versionUpdateNeeded(String newVersion, String storedVersion) {
+    private boolean versionUpdateNeeded(String newVersion, String storedVersion) {
 
         String ver1 = newVersion;
         int ver1_tmp = newVersion.indexOf("-SNAPSHOT");
@@ -196,7 +200,7 @@ public class DeploymentService implements MessageListener {
      * @param storedVersion stored version from DB
      * @return true if the newVersion is greater then stored version.
      */
-    private static int convertVersionNumberToIntAndCompare(String newVersion, String storedVersion) {
+    private int convertVersionNumberToIntAndCompare(String newVersion, String storedVersion) {
         try {
             Integer uploaded = Integer.valueOf(newVersion);
             Integer stored = Integer.valueOf(storedVersion);

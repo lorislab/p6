@@ -8,8 +8,8 @@ RUN cd /opt/jboss/wildfly/standalone/configuration/ \
     && cp standalone-full-ha.xml standalone.xml
 
 # Reconfigure the wildfly
-COPY src/docker/wildfly/config.cli /tmp/config.cli
-RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/config.cli
+COPY src/main/docker/ /tmp/docker
+RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/docker/wildfly/config.cli
 
 FROM jboss/wildfly:15.0.0.Final-1
 
@@ -17,16 +17,16 @@ FROM jboss/wildfly:15.0.0.Final-1
 COPY --chown=jboss:root --from=liquibase /opt/liquibase /opt/liquibase
 
 # Install the postgresql driver to the liquibase
-COPY src/docker/wildfly/modules/org/postgresql/main/postgresql-*.jar /opt/liquibase/lib/
+COPY --chown=jboss:root --from=build /tmp/docker/wildfly/modules/org/postgresql/main/postgresql-42.2.5.jar /opt/liquibase/lib/
 
 # Copy configuration from the build image
 COPY --chown=jboss:root --from=build /opt/jboss/wildfly/standalone/configuration/standalone.xml /opt/jboss/wildfly/standalone/configuration/standalone.xml
 
 # Add the database configuration
-COPY src/docker/db /opt/assembly/db
+COPY --chown=jboss:root --from=build /tmp/docker/db /opt/assembly/db
 
 # Add the wildfly modules
-COPY src/docker/wildfly/modules /opt/jboss/wildfly/modules
+COPY --chown=jboss:root --from=build /tmp/docker/wildfly/modules /opt/jboss/wildfly/modules
 
 # Deploy the application
 ADD target/*.war /opt/jboss/wildfly/standalone/deployments/

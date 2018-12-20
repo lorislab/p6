@@ -23,9 +23,7 @@ import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import javax.jms.JMSContext;
-import javax.jms.Message;
-import javax.jms.Queue;
+import javax.jms.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,6 +36,7 @@ import java.util.stream.Collectors;
 public class ClientDeploymentService {
 
     @Inject
+    @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
 
     @Resource(lookup = "java:app/AppName")

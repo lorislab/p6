@@ -13,10 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import javax.jms.JMSContext;
-import javax.jms.JMSProducer;
-import javax.jms.Message;
-import javax.jms.Queue;
+import javax.jms.*;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +22,7 @@ import java.util.List;
 public class StartupService {
 
     @Inject
+    @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
 
     @EJB

@@ -20,19 +20,19 @@ xa-data-source add \
         --xa-datasource-properties={"URL"=>"${env.DB_URL:jdbc:postgresql://postgresdb:5432/p6}"}
 
 # Add the activity queue
-jms-queue add --queue-address=p6.activity --entries=java:/jms/queue/p6.activity
+# jms-queue add --queue-address=p6.activity --entries=java:/jms/queue/p6.activity
 
 # Add the execution queue
-jms-queue add --queue-address=p6.execution --entries=java:/jms/queue/p6.execution
+# jms-queue add --queue-address=p6.execution --entries=java:/jms/queue/p6.execution
 
 # Add the singleton queue
-jms-queue add --queue-address=p6.singleton --entries=java:/jms/queue/p6.singleton
+# jms-queue add --queue-address=p6.singleton --entries=java:/jms/queue/p6.singleton
 
 # Enable clustering, and set a cluster password
-/subsystem=messaging-activemq/server=default:write-attribute(name=cluster-password, value=p6)
+# /subsystem=messaging-activemq/server=default:write-attribute(name=cluster-password, value=p6)
 
 # Add mdb-delivery-group named "p6-mdb-delivery-group"
-/subsystem=ejb3/mdb-delivery-group=p6-mdb-delivery-group:add(active=true)
+# /subsystem=ejb3/mdb-delivery-group=p6-mdb-delivery-group:add(active=true)
 
 run-batch
 stop-embedded-server

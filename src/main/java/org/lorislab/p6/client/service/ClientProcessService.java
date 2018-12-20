@@ -10,10 +10,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +25,7 @@ public class ClientProcessService {
     private Yaml yaml;
 
     @Inject
+    @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
 
     @PostConstruct
