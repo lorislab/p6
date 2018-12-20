@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 lorislab.org.
+ * Copyright 2018 lorislab.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
+package org.lorislab.p6.jpa.model;
 
-/**
- *
- * @author andrej
- */
-public enum ErrorKeys {
+import javax.persistence.*;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.lorislab.jee.jpa.model.Persistent;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "P6_PROCESS_DEF_CONTENT")
+public class ProcessContent extends Persistent {
     
-    ERROR_LOAD_PROCESS_DEF_BY_ID,
+    private static final long serialVersionUID = 4747328298850613655L;
     
-    ERROR_FIND_PROCESS_DEF_BY_ID
-    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROCESS_DEF_GUID")
+    private ProcessDefinition processDefinition;
+
+    @Column(name = "DATA", length = 5000)
+    private byte[] data;
+
 }

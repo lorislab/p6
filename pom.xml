@@ -48,7 +48,12 @@
         <dependency>
             <groupId>org.lorislab.jee</groupId>
             <artifactId>jel</artifactId>
-            <version>8.0.0</version>
+            <version>8.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.23</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -68,6 +73,13 @@
             <version>5.4.0.Final</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -76,9 +88,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
@@ -133,31 +142,10 @@
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-javadoc</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <configuration>
-                                <links>
-                                    <link>https://docs.oracle.com/en/java/javase/11/docs/api/index.html</link>
-                                </links>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -185,7 +173,7 @@
                 <plugin>
                     <groupId>org.lorislab.maven</groupId>
                     <artifactId>wildfly-maven-plugin</artifactId>
-                    <version>1.1.1</version>
+                    <version>1.2.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -210,8 +198,6 @@
                         </executions>
                         <configuration>
                             <repository>lorislab/${project.artifactId}</repository>
-                            <!--<tag>${project.version}</tag>-->
-                            <!--<contextDirectory>${project.basedir}/src/main/docker</contextDirectory>-->
                         </configuration>
                     </plugin>
                 </plugins>
@@ -296,6 +282,42 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <links>
+                                        <link>https://docs.oracle.com/en/java/javase/11/docs/api/index.html</link>
+                                    </links>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <distributionManagement>
@@ -304,11 +326,11 @@
             <name>Release</name>
             <url>https://api.bintray.com/maven/lorislab/maven/p6/;publish=1</url>
         </repository>
-        <!--<snapshotRepository>-->
-        <!--<id>bintray</id>-->
-        <!--<name>Snapshot</name>-->
-        <!--<url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>-->
-        <!--</snapshotRepository>-->
+        <snapshotRepository>
+            <id>bintray</id>
+            <name>Snapshot</name>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>

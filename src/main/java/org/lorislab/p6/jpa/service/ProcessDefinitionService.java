@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
+package org.lorislab.p6.jpa.service;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -23,55 +23,44 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import org.lorislab.jee.exception.ServiceException;
 import org.lorislab.jee.jpa.service.AbstractEntityService;
-import org.lorislab.p6.model.ProcessDefinition;
-import org.lorislab.p6.model.ProcessDefinition_;
+import org.lorislab.p6.jpa.model.ProcessDefinition;
+import org.lorislab.p6.jpa.model.ProcessDefinition_;
 
-/**
- *
- * @author andrej
- */
+import java.util.List;
+
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class ProcessDefinitionService extends AbstractEntityService<ProcessDefinition, Long> {
+public class ProcessDefinitionService extends AbstractEntityService<ProcessDefinition, String> {
 
-    public ProcessDefinition loadById(String id) throws ServiceException {
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public List<ProcessDefinition> loadByProcessId(String processId) throws ServiceException {
         try {
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<ProcessDefinition> cq = cb.createQuery(ProcessDefinition.class);
             Root<ProcessDefinition> root = cq.from(ProcessDefinition.class);
             cq.distinct(true);
-            root.fetch(ProcessDefinition_.contents);
-            cq.where(cb.equal(root.get(ProcessDefinition_.id), id));
+            root.fetch(ProcessDefinition_.content);
+            cq.where(cb.equal(root.get(ProcessDefinition_.processId), processId));
             TypedQuery<ProcessDefinition> query = getEntityManager().createQuery(cq);
-            try {
-                return query.getSingleResult();
-            } catch (NoResultException nr) {
-                // ignore
-            }
-            return null;
+            return query.getResultList();
         } catch (Exception ex) {
-            throw new ServiceException(ErrorKeys.ERROR_LOAD_PROCESS_DEF_BY_ID, ex, id);
+            throw new ServiceException(ErrorKeys.ERROR_LOAD_PROCESS_DEF_BY_ID, ex, processId);
         }
     }
-    
-    public ProcessDefinition findById(String id) throws ServiceException {
+
+    public List<ProcessDefinition> findByProcessId(String processId) throws ServiceException {
         try {
             CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<ProcessDefinition> cq = cb.createQuery(ProcessDefinition.class);
             Root<ProcessDefinition> root = cq.from(ProcessDefinition.class);
-            cq.where(cb.equal(root.get(ProcessDefinition_.id), id));
+            cq.where(cb.equal(root.get(ProcessDefinition_.processId), processId));
             TypedQuery<ProcessDefinition> query = getEntityManager().createQuery(cq);
-            try {
-                return query.getSingleResult();
-            } catch (NoResultException nr) {
-                // ignore
-            }
-
-            return null;
+            return query.getResultList();
         } catch (Exception ex) {
-            throw new ServiceException(ErrorKeys.ERROR_FIND_PROCESS_DEF_BY_ID, ex, id);
+            throw new ServiceException(ErrorKeys.ERROR_FIND_PROCESS_DEF_BY_ID, ex, processId);
         }
     }
 }

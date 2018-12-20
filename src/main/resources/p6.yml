@@ -1,0 +1,54 @@
+!!org.lorislab.p6.flow.model.ProcessFlow
+processId: org.lorislab.p6.example.Test1
+processVersion: 1.0.0
+start:
+  - start
+nodes:
+  gateway2: !!org.lorislab.p6.flow.model.GatewayNode
+    name: gateway2
+  gateway1: !!org.lorislab.p6.flow.model.GatewayNode
+    name: gateway1
+  start: !!org.lorislab.p6.flow.model.StartNode
+    name: start
+  service1: !!org.lorislab.p6.flow.model.ServiceNode
+    name: service1
+  service4: !!org.lorislab.p6.flow.model.ServiceNode
+    name: service4
+  end: !!org.lorislab.p6.flow.model.EndNode
+    name: end
+  service3: !!org.lorislab.p6.flow.model.ServiceNode
+    name: service3
+sequence:
+  gateway2:
+    from:
+      - service3
+      - service4
+    to:
+      - end
+  gateway1:
+    from:
+      - service1
+    to:
+      - service3
+      - service4
+  start:
+    to:
+      - service1
+  service1:
+    from:
+      - start
+    to:
+      - gateway1
+  service4:
+    from:
+      - gateway1
+    to:
+      - gateway2
+  end:
+    from:
+      - gateway2
+  service3:
+    from:
+      - gateway1
+    to:
+      - gateway2

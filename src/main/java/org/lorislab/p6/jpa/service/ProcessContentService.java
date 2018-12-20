@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
+package org.lorislab.p6.jpa.service;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import org.lorislab.jee.jpa.service.AbstractEntityService;
-import org.lorislab.p6.model.ProcessContent;
+import org.lorislab.p6.jpa.model.ProcessContent;
 
-/**
- *
- * @author andrej
- */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ProcessContentService extends AbstractEntityService<ProcessContent, String> {

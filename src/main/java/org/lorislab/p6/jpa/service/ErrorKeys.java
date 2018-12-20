@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
+package org.lorislab.p6.jpa.service;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import org.lorislab.jee.jpa.service.AbstractEntityService;
-import org.lorislab.p6.model.ProcessInstance;
+public enum ErrorKeys {
 
-/**
- *
- * @author andrej
- */
-@Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class ProcessInstanceService extends AbstractEntityService<ProcessInstance, Long> {
+    ERROR_FIND_LATESTS,
+
+    ERROR_FIND_LATEST_DEF_BY_PROCESS_ID,
+
+    ERROR_LOAD_PROCESS_DEF_BY_ID,
+    
+    ERROR_FIND_PROCESS_DEF_BY_ID
     
 }
