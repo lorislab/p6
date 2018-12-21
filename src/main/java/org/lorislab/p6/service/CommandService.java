@@ -1,21 +1,29 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.flow.model.event.StartEvent;
 import org.lorislab.p6.jpa.model.ProcessDefinition;
+import org.lorislab.p6.jpa.model.ProcessDeployment;
+import org.lorislab.p6.jpa.model.ProcessInstance;
+import org.lorislab.p6.jpa.model.ProcessToken;
+import org.lorislab.p6.jpa.model.enums.ProcessInstanceStatus;
+import org.lorislab.p6.jpa.model.enums.ProcessTokenStatus;
 import org.lorislab.p6.jpa.service.ProcessDefinitionService;
+import org.lorislab.p6.jpa.service.ProcessDeploymentService;
+import org.lorislab.p6.jpa.service.ProcessInstanceService;
 import org.lorislab.p6.model.RuntimeProcess;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
-import javax.ejb.MessageDriven;
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import javax.ejb.*;
+import javax.inject.Inject;
+import javax.jms.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 @MessageDriven(
@@ -28,11 +36,21 @@ public class CommandService implements MessageListener {
 
     private Yaml yaml;
 
+    @Inject
+    @JMSConnectionFactory("java:/JmsXA")
+    private JMSContext context;
+
     @EJB
     private ProcessDefinitionService processDefinitionService;
 
     @EJB
     private RuntimeProcessService runtimeProcessService;
+
+    @EJB
+    private ProcessInstanceService processInstanceService;
+
+    @EJB
+    private ProcessDeploymentService processDeploymentService;
 
     @PostConstruct
     public void init() {
@@ -42,6 +60,7 @@ public class CommandService implements MessageListener {
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void onMessage(Message message) {
         String cmd = null;
         try {
@@ -87,10 +106,52 @@ public class CommandService implements MessageListener {
 
     private void startProcess(Message message) throws Exception {
         String processId = message.getStringProperty(ConfigService.MSG_PROCESS_ID);
-        RuntimeProcess process = runtimeProcessService.getRuntimeProcess(processId);
-        if (process != null) {
-            log.error("###################### NOT SUPPORTED: startProcess ###################");
+        String processInstanceId = message.getStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID);
 
+        ProcessDeployment deployment = processDeploymentService.findByProcessId(processId);
+        if (deployment == null) {
+            log.error("No process found in the deployment for the process id: {}", processId);
+            return;
+        }
+
+        RuntimeProcess process = runtimeProcessService.getRuntimeProcess(deployment.getProcessId(), deployment.getProcessVersion());
+        if (process != null) {
+            List<String> nodes = process.getFlow().getStart();
+            if (nodes != null && !nodes.isEmpty()) {
+
+                Queue tokenQueue = context.createQueue(ConfigService.QUEUE_TOKEN);
+                JMSProducer producer = context.createProducer();
+
+                ProcessInstance instance = new ProcessInstance();
+                instance.setGuid(processInstanceId);
+                instance.setStatus(ProcessInstanceStatus.IN_EXECUTION);
+                instance.setProcessId(process.getDefinition().getProcessId());
+                instance.setProcessDefinitionGuid(process.getDefinition().getGuid());
+                instance.setProcessVersion(process.getDefinition().getProcessVersion());
+
+                for (String node : nodes) {
+                    // create token
+                    ProcessToken token = new ProcessToken();
+                    token.setNodeName(node);
+                    token.setStatus(ProcessTokenStatus.IN_EXECUTION);
+                    token.setProcessInstance(instance);
+                    instance.getTokens().add(token);
+
+                    // send token message
+                    Message tokenMessage = context.createMessage();
+                    tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_ID, instance.getProcessId());
+                    tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_VERSION, instance.getProcessVersion());
+                    tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, instance.getGuid());
+                    tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, token.getGuid());
+                    producer.send(tokenQueue, tokenMessage);
+                }
+
+                // save the process instance
+                processInstanceService.create(instance);
+
+            } else {
+                log.error("No start events devfined for the process id: {}", processId);
+            }
         } else {
             log.error("No runtime process found for the process id: {}", processId);
         }

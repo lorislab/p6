@@ -14,6 +14,8 @@ import javax.persistence.Table;
 @Table(name = "P6_PROCESS_DEPLOYMENT")
 public class ProcessDeployment extends PersistentTraceable {
 
+    private static final long serialVersionUID = 5046421104512198192L;
+
     @Column(name = "PROCESS_DEF_GUID")
     private String processDefinitionGuid;
 

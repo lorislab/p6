@@ -5,4 +5,7 @@ import lombok.Data;
 @Data
 public class EndEvent extends Event {
 
+    public EndEvent() {
+        super(EventType.END);
+    }
 }

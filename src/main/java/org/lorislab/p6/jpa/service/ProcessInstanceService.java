@@ -15,12 +15,15 @@
  */
 package org.lorislab.p6.jpa.service;
 
-public enum ErrorKeys {
+import org.lorislab.jee.jpa.service.AbstractEntityService;
+import org.lorislab.p6.jpa.model.ProcessInstance;
 
-    ERROR_UPDATE_TOKEN_STATUS,
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
-    ERROR_LOAD_PROCESS_DEF_BY_ID,
-    
-    ERROR_FIND_PROCESS_DEF_BY_ID
-    
+@Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public class ProcessInstanceService extends AbstractEntityService<ProcessInstance, String> {
+
 }

@@ -4,20 +4,36 @@ processVersion: 1.0.0
 start:
   - start
 nodes:
-  gateway2: !!org.lorislab.p6.flow.model.GatewayNode
+  gateway2: !!org.lorislab.p6.flow.model.gateway.ParallelGateway
+    gatewayType: PARALLEL
     name: gateway2
-  gateway1: !!org.lorislab.p6.flow.model.GatewayNode
+    nodeType: GATEWAY
+    sequenceFlow: CONVERGING
+  gateway1: !!org.lorislab.p6.flow.model.gateway.ParallelGateway
+    gatewayType: PARALLEL
     name: gateway1
+    nodeType: GATEWAY
+    sequenceFlow: DIVERGING
   start: !!org.lorislab.p6.flow.model.event.StartEvent
+    eventType: START
     name: start
-  service1: !!org.lorislab.p6.flow.model.ServiceTask
+    nodeType: EVENT
+  service1: !!org.lorislab.p6.flow.model.task.ServiceTask
     name: service1
-  service4: !!org.lorislab.p6.flow.model.ServiceTask
+    nodeType: TASK
+    taskType: SERVICE_TASK
+  service4: !!org.lorislab.p6.flow.model.task.ServiceTask
     name: service4
+    nodeType: TASK
+    taskType: SERVICE_TASK
   end: !!org.lorislab.p6.flow.model.event.EndEvent
+    eventType: END
     name: end
-  service3: !!org.lorislab.p6.flow.model.ServiceTask
+    nodeType: EVENT
+  service3: !!org.lorislab.p6.flow.model.task.ServiceTask
     name: service3
+    nodeType: TASK
+    taskType: SERVICE_TASK
 sequence:
   gateway2:
     from:

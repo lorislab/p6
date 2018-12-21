@@ -1,11 +1,8 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.jee.exception.ServiceException;
 import org.lorislab.p6.config.ConfigService;
-import org.lorislab.p6.jpa.model.ProcessDefinition;
 import org.lorislab.p6.jpa.model.ProcessDeployment;
-import org.lorislab.p6.jpa.service.ProcessDefinitionService;
 import org.lorislab.p6.jpa.service.ProcessDeploymentService;
 
 import javax.annotation.PostConstruct;

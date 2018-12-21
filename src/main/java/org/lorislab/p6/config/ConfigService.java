@@ -61,7 +61,9 @@ public class ConfigService {
 
     public static final String QUEUE_REQUEST = "p6.request";
 
-    public static final String QUEUE_RESPONSE = "p6r.esponse";
+    public static final String QUEUE_TOKEN = "p6.token";
+
+    public static final String QUEUE_RESPONSE = "p6.response";
 
     public static final String QUEUE_CMD = "p6.cmd";
 
@@ -72,6 +74,10 @@ public class ConfigService {
     public static final String DEPLOYMENT_DESCRIPTOR = "p6.yml";
 
     public static final String MSG_CMD = "P6_CMD";
+
+    public static final String MSG_PROCESS_TOKEN_SERVICE_TASK = "P6_PROCESS_TOKEN_SERVICE_TASK";
+
+    public static final String MSG_PROCESS_TOKEN_ID = "P6_PROCESS_TOKEN_ID";
 
     public static final String MSG_PROCESS_ID = "P6_PROCESS_ID";
 

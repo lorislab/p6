@@ -11,17 +11,9 @@ import org.lorislab.p6.jpa.model.ProcessDefinition;
 @AllArgsConstructor
 public class RuntimeProcess {
 
-    private String processId;
-
     private ProcessDefinition definition;
 
     private ProcessFlow flow;
-
-    public RuntimeProcess(ProcessDefinition definition, ProcessFlow flow) {
-        this.definition = definition;
-        this.flow = flow;
-        processId = definition.getProcessId();
-    }
 
     public Node getNode(String name) {
         return flow.getNodes().get(name);

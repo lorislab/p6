@@ -1,8 +1,12 @@
 package org.lorislab.p6.flow.model;
 
 import lombok.Data;
+import org.lorislab.p6.flow.model.activity.CallActivity;
 import org.lorislab.p6.flow.model.event.EndEvent;
 import org.lorislab.p6.flow.model.event.StartEvent;
+import org.lorislab.p6.flow.model.gateway.Gateway;
+import org.lorislab.p6.flow.model.gateway.ParallelGateway;
+import org.lorislab.p6.flow.model.task.ServiceTask;
 
 import javax.json.bind.annotation.JsonbPropertyOrder;
 import java.util.ArrayList;
@@ -24,6 +28,11 @@ public class ProcessFlow {
 
     private Map<String, Sequence> sequence = new HashMap<>();
 
+    public String getNextNodeName(String name) {
+        Sequence seq = sequence.get(name);
+        return seq.next();
+    }
+
     public StartEvent createStartEvent(String name) {
         start.add(name);
         return updateNode(new StartEvent(), name);
@@ -37,8 +46,8 @@ public class ProcessFlow {
         return updateNode(new ServiceTask(), name, from);
     }
 
-    public GatewayNode createGatewayNode(String name, Node ... from) {
-        return updateNode(new GatewayNode(), name, from);
+    public ParallelGateway createParallelGatewayNode(String name, Node ... from) {
+        return updateNode(new ParallelGateway(), name, from);
     }
 
     public EndEvent createEndEvent(String name, Node ... from) {

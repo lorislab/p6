@@ -12,6 +12,10 @@ public class Sequence {
 
     private List<String> to;
 
+    public String next() {
+        return to.get(0);
+    }
+
     public void addDirectionTo(Node ... nodes) {
         if (nodes != null && nodes.length > 0) {
             if (to == null) {
