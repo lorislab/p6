@@ -1,7 +1,6 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.Sequence;
 import org.lorislab.p6.flow.model.gateway.Gateway;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
@@ -11,34 +10,29 @@ import org.lorislab.p6.jpa.model.enums.ProcessTokenStatus;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
 import org.lorislab.p6.json.ServerJsonService;
-import org.lorislab.p6.model.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcess;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.jms.*;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class GatewayExecutionService {
-
-    @Inject
-    @JMSConnectionFactory("java:/JmsXA")
-    private JMSContext context;
+public class GatewayExecutorService {
 
     @EJB
     private ProcessTokenService processTokenService;
 
     @EJB
     private ProcessInstanceService processInstanceService;
+
+    @EJB
+    private TokenService tokenService;
 
     public void executeGateway(ProcessToken token, RuntimeProcess runtimeProcess, Gateway gateway) throws Exception {
         switch (gateway.getGatewayType()) {
@@ -70,23 +64,7 @@ public class GatewayExecutionService {
             gatewayToken.setData(token.getData());
             gatewayToken.setProcessInstance(processInstance);
         } else {
-
-            if (token.getData() != null) {
-                Map<String, Object> data = new HashMap<>();
-                if (gatewayToken.getData() != null) {
-                    String tmp = new String(gatewayToken.getData(), StandardCharsets.UTF_8);
-                    if (!tmp.isBlank()) {
-                        data = ServerJsonService.loadData(tmp);
-                    }
-                }
-
-                String tmp = new String(token.getData(), StandardCharsets.UTF_8);
-                Map<String, Object> newData = ServerJsonService.loadData(tmp);
-                data.putAll(newData);
-                String resultData = ServerJsonService.saveData(data);
-                gatewayToken.setData(resultData.getBytes(StandardCharsets.UTF_8));
-            }
-
+            gatewayToken = ServerJsonService.mergeData(gatewayToken, token);
             gatewayToken.getParents().add(token.getGuid());
             gatewayToken.setPreviousName(token.getNodeName());
         }
@@ -94,19 +72,12 @@ public class GatewayExecutionService {
         Sequence sequence = runtimeProcess.getFlow().getSequence().get(gateway.getName());
         List<String> from = sequence.getFrom();
         Set<String> parents = gatewayToken.getParents();
-        log.info("FROM: {}", from.size());
-        log.info("PARENT: {}", parents.size());
+        log.info("FROM: {} PARENT: {}", from.size(), parents.size());
         if (from.size() == parents.size()) {
             gatewayToken.setNodeName(sequence.next());
 
-            Queue tokenQueue = context.createQueue(ConfigService.QUEUE_TOKEN);
-            JMSProducer producer = context.createProducer();
-            Message tokenMessage = context.createMessage();
-            tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_ID, processInstance.getProcessId());
-            tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
-            tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
-            tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, gatewayToken.getGuid());
-            producer.send(tokenQueue, tokenMessage);
+            // send token message
+            tokenService.sendTokenMessage(processInstance, gatewayToken);
         }
 
 
@@ -123,29 +94,21 @@ public class GatewayExecutionService {
 
             ProcessInstance processInstance = token.getProcessInstance();
 
-            Queue tokenQueue = context.createQueue(ConfigService.QUEUE_TOKEN);
-            JMSProducer producer = context.createProducer();
-
+            // create token
+            List<ProcessToken> children = new ArrayList<>(seq.getTo().size());
             for (String to : seq.getTo()) {
-
-                // create token
                 ProcessToken child = new ProcessToken();
                 child.setNodeName(to);
                 child.setPreviousName(token.getNodeName());
                 child.getParents().add(token.getGuid());
                 child.setProcessInstance(token.getProcessInstance());
                 child.setData(token.getData());
-                processTokenService.create(child);
-
-                // send token message
-                Message tokenMessage = context.createMessage();
-                tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_ID, processInstance.getProcessId());
-                tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
-                tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
-                tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, child.getGuid());
-                producer.send(tokenQueue, tokenMessage);
+                child = processTokenService.create(child);
+                children.add(child);
             }
 
+            // send token message
+            tokenService.sendTokenMessages(processInstance, children);
         }
 
         // update the token status to finished

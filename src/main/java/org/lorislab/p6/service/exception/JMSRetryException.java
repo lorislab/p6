@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.service;
+package org.lorislab.p6.service.exception;
 
 import org.lorislab.jee.exception.LoggerServiceException;
 

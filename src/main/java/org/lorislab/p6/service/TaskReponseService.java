@@ -10,12 +10,10 @@ import org.lorislab.p6.flow.model.task.TaskType;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
-import org.lorislab.p6.model.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcessService;
 
 import javax.ejb.*;
-import javax.inject.Inject;
-import javax.jms.JMSConnectionFactory;
-import javax.jms.JMSContext;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
@@ -26,11 +24,7 @@ import javax.jms.MessageListener;
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         }
 )
-public class ServiceTaskReponseService implements MessageListener {
-
-    @Inject
-    @JMSConnectionFactory("java:/JmsXA")
-    private JMSContext context;
+public class TaskReponseService implements MessageListener {
 
     @EJB
     private ProcessTokenService processTokenService;
@@ -39,7 +33,7 @@ public class ServiceTaskReponseService implements MessageListener {
     private RuntimeProcessService runtimeProcessService;
 
     @EJB
-    private TaskExecutionService taskExecutionService;
+    private TaskExecutorService taskExecutionService;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)

@@ -25,27 +25,20 @@ import org.lorislab.p6.jpa.model.ProcessDefinition;
 import org.lorislab.p6.jpa.model.ProcessDeployment;
 import org.lorislab.p6.jpa.service.ProcessDefinitionService;
 import org.lorislab.p6.jpa.service.ProcessDeploymentService;
-import org.lorislab.p6.model.RuntimeProcess;
+import org.lorislab.p6.util.DeploymentVersionUtil;
 
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
-import javax.ejb.MessageDriven;
-import javax.inject.Inject;
+import javax.ejb.*;
 import javax.jms.*;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-@MessageDriven(name = "DeploymentService",
+@MessageDriven(name = "DeploymentExecutorService",
         activationConfig = {
                 @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + ConfigService.QUEUE_DEPLOY),
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         }
 )
-public class DeploymentService implements MessageListener {
-
-    @Inject
-    @JMSConnectionFactory("java:/JmsXA")
-    private JMSContext context;
+public class DeploymentExecutorService implements MessageListener {
 
     @EJB
     private ProcessDeploymentService processDeploymentService;
@@ -54,9 +47,10 @@ public class DeploymentService implements MessageListener {
     private ProcessDefinitionService processDefinitionService;
 
     @EJB
-    private RuntimeProcessService runtimeProcessService;
+    private CommandService commandService;
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void onMessage(Message message) {
         try {
             int retry = 0;
@@ -97,8 +91,9 @@ public class DeploymentService implements MessageListener {
                 deployment.setProcessVersion(processDefinition.getProcessVersion());
                 updateDeployment = true;
             } else {
+
                 // check the version.
-                if (versionUpdateNeeded(processVersion, deployment.getProcessVersion())) {
+                if (DeploymentVersionUtil.versionUpdateNeeded(processVersion, deployment.getProcessVersion())) {
                     deployment.setProcessVersion(processVersion);
                     updateDeployment = true;
                 }
@@ -116,9 +111,7 @@ public class DeploymentService implements MessageListener {
                     } else {
                         processDeploymentService.create(deployment);
                     }
-
-                    RuntimeProcess process = new RuntimeProcess(processDefinition, flow);
-                    runtimeProcessService.addRuntimeProcess(process);
+                    commandService.cmdDeploy(deployment);
                 }
 
             } catch (ConstraintException ce) {
@@ -134,65 +127,4 @@ public class DeploymentService implements MessageListener {
         }
     }
 
-    /**
-     * Compare two version strings. Return true only if the newVersion is greater then the stored one so a version update is needed
-     * @param newVersion new deployed version
-     * @param storedVersion stored version in database
-     * @return true only if the newVersion is greater then the stored one
-     */
-    private boolean versionUpdateNeeded(String newVersion, String storedVersion) {
-
-        String ver1 = newVersion;
-        int ver1_tmp = newVersion.indexOf("-SNAPSHOT");
-        if (ver1_tmp != -1) {
-            ver1 = newVersion.substring(0, ver1_tmp);
-        }
-
-        String ver2 = storedVersion;
-        boolean snapshot = false;
-        int ver2_tmp = storedVersion.indexOf("-SNAPSHOT");
-        if (ver2_tmp != -1) {
-            ver2 = storedVersion.substring(0, ver2_tmp);
-            snapshot = true;
-        }
-
-        String[] vals1 = ver1.split("\\.");
-        String[] vals2 = ver2.split("\\.");
-
-        int i = 0;
-        // set index to first non-equal ordinal or length of shortest version string
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
-            i++;
-        }
-
-        // compare first non-equal ordinal number
-        if (i < vals1.length && i < vals2.length) {
-            int diff = convertVersionNumberToIntAndCompare(vals1[i],vals2[i]);
-            return (diff > 0);
-        } else {
-            // the strings are equal or one string is a substring of the other
-            // or snapshot
-            // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
-            if (snapshot) {
-                return true;
-            }
-            return (vals1.length > vals2.length);
-        }
-    }
-
-    /**
-     * Return true if the newVersion is greater then stored version.
-     * @param newVersion new version
-     * @param storedVersion stored version from DB
-     * @return true if the newVersion is greater then stored version.
-     */
-    private int convertVersionNumberToIntAndCompare(String newVersion, String storedVersion) {
-        try {
-            Integer uploaded = Integer.valueOf(newVersion);
-            Integer stored = Integer.valueOf(storedVersion);
-            return uploaded.compareTo(stored);
-        } catch (Exception e) {
-            return newVersion.compareTo(storedVersion);
-        }
-    }
 }

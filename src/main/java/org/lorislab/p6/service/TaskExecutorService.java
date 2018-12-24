@@ -8,7 +8,7 @@ import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
 import org.lorislab.p6.json.ServerJsonService;
-import org.lorislab.p6.model.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcess;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,13 +17,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class TaskExecutionService {
+public class TaskExecutorService {
 
     @Inject
     @JMSConnectionFactory("java:/JmsXA")
@@ -31,6 +29,9 @@ public class TaskExecutionService {
 
     @EJB
     private ProcessTokenService processTokenService;
+
+    @EJB
+    private TokenService tokenService;
 
     public void execute(ProcessToken token, RuntimeProcess runtimeProcess, Task task) throws Exception {
         switch (task.getTaskType()) {
@@ -45,21 +46,7 @@ public class TaskExecutionService {
     public void completeServiceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task, String response) throws Exception {
 
 
-        if (response != null && !response.isBlank()) {
-            Map<String, Object> data = new HashMap<>();
-            if (token.getData() != null) {
-                String tmp = new String(token.getData(), StandardCharsets.UTF_8);
-                if (!tmp.isBlank()) {
-                    data = ServerJsonService.loadData(tmp);
-                }
-            }
-            Map<String, Object> newData = ServerJsonService.loadData(response);
-            data.putAll(newData);
-            String tmp = ServerJsonService.saveData(data);
-            token.setData(tmp.getBytes(StandardCharsets.UTF_8));
-        }
-
-
+        token = ServerJsonService.mergeData(token, response);
         ProcessInstance processInstance = token.getProcessInstance();
         String next = runtimeProcess.getFlow().getNextNodeName(task.getName());
 
@@ -69,14 +56,7 @@ public class TaskExecutionService {
         processTokenService.update(token);
 
         // send token message
-        Queue tokenQueue = context.createQueue(ConfigService.QUEUE_TOKEN);
-        JMSProducer producer = context.createProducer();
-        Message tokenMessage = context.createMessage();
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_ID, processInstance.getProcessId());
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, token.getGuid());
-        producer.send(tokenQueue, tokenMessage);
+        tokenService.sendTokenMessage(processInstance, token);
     }
 
     private void serviceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task) throws Exception {

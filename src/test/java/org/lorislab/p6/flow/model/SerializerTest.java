@@ -7,6 +7,8 @@ import org.lorislab.p6.flow.model.gateway.ParallelGateway;
 import org.lorislab.p6.flow.model.gateway.SequenceFlow;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 
+import java.nio.charset.StandardCharsets;
+
 public class SerializerTest {
 
     @Test
@@ -26,7 +28,8 @@ public class SerializerTest {
         p.createEndEvent("end", g2);
 
 
-        String tmp2 = JsonProcessFlowService.saveProcessFlow(p);
+        byte[] tmp = JsonProcessFlowService.saveProcessFlow(p);
+        String tmp2 = new String(tmp, StandardCharsets.UTF_8);
         System.out.println(tmp2);
 
         ProcessFlow pp2 = JsonProcessFlowService.loadProcessFlow(tmp2);

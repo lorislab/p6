@@ -1,7 +1,7 @@
-package org.lorislab.p6.service;
+package org.lorislab.p6.runtime;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.model.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcess;
 
 import javax.ejb.Singleton;
 import java.util.Map;

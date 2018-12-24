@@ -20,6 +20,7 @@ import org.lorislab.p6.flow.model.ProcessFlow;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
+import java.nio.charset.StandardCharsets;
 
 
 public class JsonProcessFlowService {
@@ -34,8 +35,14 @@ public class JsonProcessFlowService {
         JSON = JsonbBuilder.create(config);
     }
 
-    public static String saveProcessFlow(ProcessFlow data) {
-        return JSON.toJson(data);
+    public static byte[] saveProcessFlow(ProcessFlow data) {
+        String tmp = JSON.toJson(data);
+        return tmp.getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static ProcessFlow loadProcessFlow(byte[] data) {
+        String tmp = new String(data, StandardCharsets.UTF_8);
+        return loadProcessFlow(tmp);
     }
 
     public static ProcessFlow loadProcessFlow(String data) {

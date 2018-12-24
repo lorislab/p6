@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
 import javax.inject.Inject;
 import javax.jms.*;
 import java.util.List;
@@ -33,28 +34,17 @@ import java.util.List;
 @Singleton
 public class StartupService {
 
-    @Inject
-    @JMSConnectionFactory("java:/JmsXA")
-    private JMSContext context;
-
     @EJB
     private ProcessDeploymentService processDeploymentService;
+
+    @EJB
+    private CommandService commandService;
 
     @PostConstruct
     public void init() {
         try {
             List<ProcessDeployment> deployments = processDeploymentService.findAll(null, null);
-            Queue cmd = context.createQueue(ConfigService.QUEUE_CMD);
-            JMSProducer producer = context.createProducer();
-            for (int i=0; i<deployments.size(); i++) {
-                ProcessDeployment dep = deployments.get(i);
-                Message msg = context.createMessage();
-                msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_DEPLOY);
-                msg.setStringProperty(ConfigService.MSG_PROCESS_DEF_GUID, dep.getProcessDefinitionGuid());
-                msg.setStringProperty(ConfigService.MSG_PROCESS_ID, dep.getProcessId());
-                msg.setStringProperty(ConfigService.MSG_PROCESS_VERSION, dep.getProcessVersion());
-                producer.send(cmd, msg);
-            }
+            commandService.cmdDeploy(deployments);
         } catch (Exception se) {
             log.error("Error find the latest process definitions from the database.", se);
             throw new RuntimeException("Error find the latest process definitions!");

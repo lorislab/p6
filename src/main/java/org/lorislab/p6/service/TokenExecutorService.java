@@ -10,10 +10,11 @@ import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
-import org.lorislab.p6.model.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcess;
+import org.lorislab.p6.runtime.RuntimeProcessService;
+import org.lorislab.p6.service.exception.JMSRetryException;
 
 import javax.ejb.*;
-import javax.inject.Inject;
 import javax.jms.*;
 
 @Slf4j
@@ -23,11 +24,7 @@ import javax.jms.*;
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         }
 )
-public class TokenExecutionService implements MessageListener {
-
-    @Inject
-    @JMSConnectionFactory("java:/JmsXA")
-    private JMSContext context;
+public class TokenExecutorService implements MessageListener {
 
     @EJB
     private RuntimeProcessService runtimeProcessService;
@@ -39,13 +36,13 @@ public class TokenExecutionService implements MessageListener {
     private ProcessInstanceService processInstanceService;
 
     @EJB
-    private EventExecutionService eventExecutionService;
+    private EventExecutorService eventExecutionService;
 
     @EJB
-    private TaskExecutionService taskExecutionService;
+    private TaskExecutorService taskExecutionService;
 
     @EJB
-    private GatewayExecutionService gatewayExecutionService;
+    private GatewayExecutorService gatewayExecutionService;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)

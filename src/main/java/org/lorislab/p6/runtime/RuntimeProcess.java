@@ -1,4 +1,4 @@
-package org.lorislab.p6.model;
+package org.lorislab.p6.runtime;
 
 import lombok.*;
 import org.lorislab.p6.flow.model.Node;

@@ -9,6 +9,6 @@ import javax.ejb.TransactionAttributeType;
 @Slf4j
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class ActivityExecutionService {
+public class ActivityExecutorService {
     
 }
