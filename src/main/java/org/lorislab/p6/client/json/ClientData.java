@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.jpa.service;
+package org.lorislab.p6.client.json;
 
-public enum ErrorKeys {
+import lombok.Getter;
+import lombok.Setter;
 
-    ERROR_LOAD_BY_NODE_NAME_PROCESS_INSTANCE_ID,
+import java.util.HashMap;
+import java.util.Map;
 
-    ERROR_UPDATE_TOKEN_STATUS,
+@Getter
+@Setter
+public class ClientData {
 
-    ERROR_LOAD_PROCESS_DEF_BY_ID,
-    
-    ERROR_FIND_PROCESS_DEF_BY_ID
-    
+    private Map<String, DataItem> data = new HashMap<>();
+
 }

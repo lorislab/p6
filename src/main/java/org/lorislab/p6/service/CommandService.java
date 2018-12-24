@@ -1,10 +1,9 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.flow.model.Node;
-import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.config.ConfigService;
-import org.lorislab.p6.flow.model.event.StartEvent;
+import org.lorislab.p6.flow.json.JsonProcessFlowService;
+import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.jpa.model.ProcessDefinition;
 import org.lorislab.p6.jpa.model.ProcessDeployment;
 import org.lorislab.p6.jpa.model.ProcessInstance;
@@ -15,10 +14,7 @@ import org.lorislab.p6.jpa.service.ProcessDefinitionService;
 import org.lorislab.p6.jpa.service.ProcessDeploymentService;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
 import org.lorislab.p6.model.RuntimeProcess;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.Inject;
 import javax.jms.*;
@@ -33,8 +29,6 @@ import java.util.List;
         }
 )
 public class CommandService implements MessageListener {
-
-    private Yaml yaml;
 
     @Inject
     @JMSConnectionFactory("java:/JmsXA")
@@ -51,13 +45,6 @@ public class CommandService implements MessageListener {
 
     @EJB
     private ProcessDeploymentService processDeploymentService;
-
-    @PostConstruct
-    public void init() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        yaml = new Yaml(options);
-    }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -82,7 +69,7 @@ public class CommandService implements MessageListener {
                     log.error("Not supported command '{}' in the command message.", cmd);
             }
         } catch (Exception ex) {
-            log.error("Error execute the command " + cmd, ex);
+            log.error("Error executeGateway the command " + cmd, ex);
         }
     }
 
@@ -90,7 +77,7 @@ public class CommandService implements MessageListener {
         String guid = message.getStringProperty(ConfigService.MSG_PROCESS_DEF_GUID);
         ProcessDefinition def = processDefinitionService.loadByGuid(guid);
         String data = new String(def.getContent().getData(), StandardCharsets.UTF_8);
-        ProcessFlow flow = yaml.loadAs(data, ProcessFlow.class);
+        ProcessFlow flow = JsonProcessFlowService.loadProcessFlow(data);
         def.setContent(null);
         RuntimeProcess process = new RuntimeProcess(def, flow);
         runtimeProcessService.addRuntimeProcess(process);
@@ -133,6 +120,7 @@ public class CommandService implements MessageListener {
                     // create token
                     ProcessToken token = new ProcessToken();
                     token.setNodeName(node);
+                    token.setStartNodeName(node);
                     token.setStatus(ProcessTokenStatus.IN_EXECUTION);
                     token.setProcessInstance(instance);
                     instance.getTokens().add(token);
@@ -146,7 +134,7 @@ public class CommandService implements MessageListener {
                     producer.send(tokenQueue, tokenMessage);
                 }
 
-                // save the process instance
+                // saveProcessFlow the process instance
                 processInstanceService.create(instance);
 
             } else {

@@ -11,7 +11,6 @@ import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
 import org.lorislab.p6.model.RuntimeProcess;
-import org.yaml.snakeyaml.tokens.Token;
 
 import javax.ejb.*;
 import javax.inject.Inject;

@@ -28,7 +28,7 @@ import javax.persistence.*;
         indexes = @Index(name = "P6_PROCESS_DEF_IDX", columnList = "PROCESS_ID,PROCESS_VERSION", unique = true)
 )
 @NamedEntityGraphs({
-        @NamedEntityGraph(name = "ProcessDefinition.load", attributeNodes = {@NamedAttributeNode("content")})
+        @NamedEntityGraph(name = "ProcessDefinition.loadProcessFlow", attributeNodes = {@NamedAttributeNode("content")})
 })
 public class ProcessDefinition extends PersistentTraceable {
 

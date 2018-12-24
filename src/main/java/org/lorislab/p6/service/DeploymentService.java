@@ -17,6 +17,7 @@ package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.jee.jpa.exception.ConstraintException;
+import org.lorislab.p6.flow.json.JsonProcessFlowService;
 import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.jpa.model.ProcessContent;
@@ -24,10 +25,8 @@ import org.lorislab.p6.jpa.model.ProcessDefinition;
 import org.lorislab.p6.jpa.model.ProcessDeployment;
 import org.lorislab.p6.jpa.service.ProcessDefinitionService;
 import org.lorislab.p6.jpa.service.ProcessDeploymentService;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
+import org.lorislab.p6.model.RuntimeProcess;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -44,8 +43,6 @@ import java.nio.charset.StandardCharsets;
 )
 public class DeploymentService implements MessageListener {
 
-    private Yaml yaml;
-
     @Inject
     @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
@@ -56,12 +53,8 @@ public class DeploymentService implements MessageListener {
     @EJB
     private ProcessDefinitionService processDefinitionService;
 
-    @PostConstruct
-    public void init() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        yaml = new Yaml(options);
-    }
+    @EJB
+    private RuntimeProcessService runtimeProcessService;
 
     @Override
     public void onMessage(Message message) {
@@ -76,7 +69,7 @@ public class DeploymentService implements MessageListener {
             log.info("Start deployment {} - {}", application, module);
             String data = message.getBody(String.class);
 
-            ProcessFlow flow = yaml.loadAs(data, ProcessFlow.class);
+            ProcessFlow flow = JsonProcessFlowService.loadProcessFlow(data);
             String processId = flow.getProcessId();
             String processVersion = flow.getProcessVersion();
 
@@ -116,7 +109,7 @@ public class DeploymentService implements MessageListener {
                 // create new process definition and content
                 processDefinitionService.create(processDefinition);
 
-                // save or update the deployment information
+                // saveProcessFlow or update the deployment information
                 if (updateDeployment) {
                     if (deployment.isPersisted()) {
                         processDeploymentService.update(deployment);
@@ -124,20 +117,13 @@ public class DeploymentService implements MessageListener {
                         processDeploymentService.create(deployment);
                     }
 
-                    // send deployment message.
-                    Queue cmd = context.createQueue(ConfigService.QUEUE_CMD);
-                    JMSProducer producer = context.createProducer();
-                    Message msg = context.createMessage();
-                    msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_DEPLOY);
-                    msg.setStringProperty(ConfigService.MSG_PROCESS_DEF_GUID, deployment.getProcessDefinitionGuid());
-                    msg.setStringProperty(ConfigService.MSG_PROCESS_ID, deployment.getProcessId());
-                    msg.setStringProperty(ConfigService.MSG_PROCESS_VERSION, deployment.getProcessVersion());
-                    producer.send(cmd, msg);
+                    RuntimeProcess process = new RuntimeProcess(processDefinition, flow);
+                    runtimeProcessService.addRuntimeProcess(process);
                 }
 
             } catch (ConstraintException ce) {
-                log.error("Error execute the deployment becouse of constraints: {}. Retry {}", ce.getConstraints(), retry);
-                throw new RuntimeException("Error execute the deployment becouse of constraints. Start the retry " + retry);
+                log.error("Error executeGateway the deployment becouse of constraints: {}. Retry {}", ce.getConstraints(), retry);
+                throw new RuntimeException("Error executeGateway the deployment becouse of constraints. Start the retry " + retry);
             } catch (Exception ex) {
                 log.error("Process eployment retry " + retry + " error: " + ex.getMessage(), ex);
                 throw new RuntimeException("Deployment error. Start the retry " + retry);

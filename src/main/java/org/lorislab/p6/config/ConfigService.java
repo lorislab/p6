@@ -25,27 +25,38 @@ import javax.jms.JMSDestinationDefinitions;
                 @JMSDestinationDefinition(
                         name = "java:/queue/" + ConfigService.QUEUE_EXEC,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_EXEC
+                        destinationName = ConfigService.QUEUE_EXEC,
+                        properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
                         name = "java:/queue/" + ConfigService.QUEUE_DEPLOY,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_DEPLOY
+                        destinationName = ConfigService.QUEUE_DEPLOY,
+                        properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
                         name = "java:/queue/" + ConfigService.QUEUE_REQUEST,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_REQUEST
+                        destinationName = ConfigService.QUEUE_REQUEST,
+                        properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
                         name = "java:/queue/" + ConfigService.QUEUE_RESPONSE,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_RESPONSE
+                        destinationName = ConfigService.QUEUE_RESPONSE,
+                        properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
                         name = "java:/queue/" + ConfigService.QUEUE_CMD,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_CMD
+                        destinationName = ConfigService.QUEUE_CMD,
+                        properties= {"redelivery-limit=1"}
+                ),
+                @JMSDestinationDefinition(
+                        name = "java:/queue/" + ConfigService.QUEUE_TOKEN,
+                        interfaceName = "javax.jms.Queue",
+                        destinationName = ConfigService.QUEUE_TOKEN,
+                        properties= {"max-delivery-attempts=1"}
                 )
         }
 )
@@ -100,4 +111,7 @@ public class ConfigService {
     public static final String CMD_SEND_MESSAGE = "CMD_SEND_MESSAGE";
 
     public static final String DATA_KEY_EVENT_DATA = "P6_EVENT_DATA";
+
+
+    public static final int MAX_REDELIVERY_COUNT = 2;
 }

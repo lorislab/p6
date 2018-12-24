@@ -7,11 +7,9 @@ import org.lorislab.p6.flow.model.task.Task;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
+import org.lorislab.p6.json.ServerJsonService;
 import org.lorislab.p6.model.RuntimeProcess;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -27,21 +25,12 @@ import java.util.Map;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class TaskExecutionService {
 
-    private Yaml yaml;
-
     @Inject
     @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
 
     @EJB
     private ProcessTokenService processTokenService;
-
-    @PostConstruct
-    public void init() {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        yaml = new Yaml(options);
-    }
 
     public void execute(ProcessToken token, RuntimeProcess runtimeProcess, Task task) throws Exception {
         switch (task.getTaskType()) {
@@ -53,7 +42,7 @@ public class TaskExecutionService {
         }
     }
 
-    public void completeServiceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task, String response) throws  Exception {
+    public void completeServiceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task, String response) throws Exception {
 
 
         if (response != null && !response.isBlank()) {
@@ -61,15 +50,14 @@ public class TaskExecutionService {
             if (token.getData() != null) {
                 String tmp = new String(token.getData(), StandardCharsets.UTF_8);
                 if (!tmp.isBlank()) {
-                    data = (Map<String, Object>) yaml.load(tmp);
+                    data = ServerJsonService.loadData(tmp);
                 }
             }
-            Map<String, Object> newData = (Map<String, Object>) yaml.load(response);
+            Map<String, Object> newData = ServerJsonService.loadData(response);
             data.putAll(newData);
-            String tmp = yaml.dumpAsMap(data);
+            String tmp = ServerJsonService.saveData(data);
             token.setData(tmp.getBytes(StandardCharsets.UTF_8));
         }
-
 
 
         ProcessInstance processInstance = token.getProcessInstance();

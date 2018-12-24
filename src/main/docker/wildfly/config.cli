@@ -34,5 +34,17 @@ xa-data-source add \
 # Add mdb-delivery-group named "p6-mdb-delivery-group"
 # /subsystem=ejb3/mdb-delivery-group=p6-mdb-delivery-group:add(active=true)
 
+# Max redelivery count
+/subsystem=messaging-activemq/server=default/address-setting=#:write-attribute(name=max-delivery-attempts,value=2)
+
+# Disable rollaback exception stacktrace
+/subsystem=logging/console-handler=CONSOLE:write-attribute(name=filter-spec,value="not(any(match(\"WFLYEJB0034.*\")\,match(\"AMQ154004.*\")))")
+
+# Add the JEL_LOG_ID to the pattern
+/subsystem=logging/pattern-formatter=COLOR-PATTERN:write-attribute(name=pattern,value="%K{level}%d{HH:mm:ss,SSS} [%X{JEL_LOG_ID}] %-5p [%c] (%t) %s%e%n")
+/subsystem=logging/pattern-formatter=PATTERN:write-attribute(name=pattern,value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%X{JEL_LOG_ID}] %-5p [%c] (%t) %s%e%n")
+
+
+
 run-batch
 stop-embedded-server

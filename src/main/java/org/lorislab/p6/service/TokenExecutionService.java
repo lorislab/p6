@@ -3,28 +3,18 @@ package org.lorislab.p6.service;
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.Node;
-import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.flow.model.event.Event;
 import org.lorislab.p6.flow.model.gateway.Gateway;
-import org.lorislab.p6.flow.model.task.ServiceTask;
 import org.lorislab.p6.flow.model.task.Task;
-import org.lorislab.p6.jpa.model.ProcessDefinition;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
-import org.lorislab.p6.jpa.model.enums.ProcessInstanceStatus;
-import org.lorislab.p6.jpa.service.ProcessDefinitionService;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
 import org.lorislab.p6.model.RuntimeProcess;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.inject.Inject;
 import javax.jms.*;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Slf4j
 @MessageDriven(
@@ -81,14 +71,18 @@ public class TokenExecutionService implements MessageListener {
                     taskExecutionService.execute(token, runtimeProcess, (Task) node);
                     break;
                 case GATEWAY:
-                    gatewayExecutionService.execute(token, runtimeProcess, (Gateway) node);
+                    gatewayExecutionService.executeGateway(token, runtimeProcess, (Gateway) node);
                     break;
                 default:
                     log.error("No supported node type: {}", node.getNodeType());
             }
         } catch (Exception ex) {
-            log.error("Error execute the token. Retry: " + retry, ex);
-            throw new RuntimeException("Error execute the token. Retry: " + retry);
+            if (retry < ConfigService.MAX_REDELIVERY_COUNT) {
+                log.error("Error executeGateway the token. '{}' Retry: {} ", ex.getMessage(), retry);
+                throw new JMSRetryException("Error executeGateway the token. Retry: " + retry);
+            }
+            log.error("Error executeGateway the token. Retry: " + retry, ex);
+            throw new RuntimeException("Error executeGateway the token. Retry: " + retry);
         }
     }
 

@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.jpa.service;
+package org.lorislab.p6.flow.json;
 
-public enum ErrorKeys {
+import org.lorislab.p6.flow.model.Node;
 
-    ERROR_LOAD_BY_NODE_NAME_PROCESS_INSTANCE_ID,
+import javax.json.bind.serializer.JsonbSerializer;
+import javax.json.bind.serializer.SerializationContext;
+import javax.json.stream.JsonGenerator;
 
-    ERROR_UPDATE_TOKEN_STATUS,
+public class NodeSerializer implements JsonbSerializer<Node> {
 
-    ERROR_LOAD_PROCESS_DEF_BY_ID,
-    
-    ERROR_FIND_PROCESS_DEF_BY_ID
-    
+    @Override
+    public void serialize(Node node, JsonGenerator generator, SerializationContext ctx) {
+        generator.writeStartObject();
+        ctx.serialize(node.getClass().getName(), node, generator);
+        generator.writeEnd();
+    }
 }

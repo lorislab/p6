@@ -1,5 +1,6 @@
 package org.lorislab.p6.jpa.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.lorislab.jee.jpa.model.PersistentTraceable;
@@ -12,9 +13,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "P6_PROCESS_TOKEN")
+@Table(name = "P6_PROCESS_TOKEN",
+        uniqueConstraints = {
+            @UniqueConstraint(name = "P6_TOKEN_NODE_INSTANCE_ID", columnNames = {"PROCESS_INSTANCE_GUID","START_NODE_NAME"})
+        }
+)
 @NamedEntityGraphs({
-        @NamedEntityGraph(name = "ProcessToken.load", attributeNodes = {
+        @NamedEntityGraph(name = "ProcessToken.loadProcessFlow", attributeNodes = {
                 @NamedAttributeNode("processInstance"), @NamedAttributeNode("parents")
         })
 })
@@ -33,6 +38,9 @@ public class ProcessToken extends PersistentTraceable {
     )
     private Set<String> parents = new HashSet<>();
 
+    @Column(name = "START_NODE_NAME")
+    private String startNodeName;
+
     @Column(name = "NODE_NAME")
     private String nodeName;
 
@@ -45,4 +53,8 @@ public class ProcessToken extends PersistentTraceable {
 
     @Column(name = "DATA", length = 5000)
     private byte[] data;
+
+    @Setter(AccessLevel.NONE)
+    @Column(name = "PROCESS_INSTANCE_GUID", insertable = false, updatable = false)
+    private String processInstanceId;
 }
