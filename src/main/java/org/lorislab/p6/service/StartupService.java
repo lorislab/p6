@@ -16,7 +16,6 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.jpa.model.ProcessDeployment;
 import org.lorislab.p6.jpa.service.ProcessDeploymentService;
 
@@ -24,9 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.inject.Inject;
-import javax.jms.*;
 import java.util.List;
 
 @Slf4j
@@ -44,7 +40,7 @@ public class StartupService {
     public void init() {
         try {
             List<ProcessDeployment> deployments = processDeploymentService.findAll(null, null);
-            commandService.cmdDeploy(deployments);
+            commandService.cmdStart(deployments);
         } catch (Exception se) {
             log.error("Error find the latest process definitions from the database.", se);
             throw new RuntimeException("Error find the latest process definitions!");

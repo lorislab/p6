@@ -88,6 +88,12 @@
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-ext-api</artifactId>
+            <version>2.2.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
     <build>
@@ -354,7 +360,7 @@
             <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
             <layout>default</layout>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
@@ -366,9 +372,10 @@
             <layout>default</layout>
             <releases>
                 <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>

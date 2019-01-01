@@ -33,7 +33,7 @@ public class TaskExecutorService {
     @EJB
     private TokenService tokenService;
 
-    public void execute(ProcessToken token, RuntimeProcess runtimeProcess, Task task) throws Exception {
+    public void executeTask(ProcessToken token, RuntimeProcess runtimeProcess, Task task) throws Exception {
         switch (task.getTaskType()) {
             case SERVICE_TASK:
                 serviceTask(token, runtimeProcess, (ServiceTask) task);

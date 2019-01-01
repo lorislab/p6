@@ -43,6 +43,7 @@ public class TokenService {
         tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
         tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
         tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, token.getGuid());
+        log.info("\n#######################\n{} -> {}\n#######################", token.getPreviousName(), token.getNodeName());
         return tokenMessage;
     }
 }

@@ -29,9 +29,9 @@ import javax.jms.JMSDestinationDefinitions;
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_DEPLOY,
+                        name = "java:/queue/" + ConfigService.QUEUE_SINGLETON,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_DEPLOY,
+                        destinationName = ConfigService.QUEUE_SINGLETON,
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
@@ -66,7 +66,7 @@ public class ConfigService {
 
     public static final String JMS_RETRY_COUNT = "JMSXDeliveryCount";
 
-    public static final String QUEUE_DEPLOY = "p6.deploy";
+    public static final String QUEUE_SINGLETON = "p6.singleton";
 
     public static final String QUEUE_EXEC = "p6.exec";
 
@@ -82,7 +82,7 @@ public class ConfigService {
 
     public static final String MSG_MODULE_NAME = "P6_MODULE_NAME";
 
-    public static final String DEPLOYMENT_DESCRIPTOR = "p6.yml";
+    public static final String DEPLOYMENT_DESCRIPTOR = "p6.json";
 
     public static final String MSG_CMD = "P6_CMD";
 
@@ -104,6 +104,8 @@ public class ConfigService {
 
     public static final String CMD_DEPLOY = "CMD_DEPLOY";
 
+    public static final String CMD_START = "CMD_START";
+
     public static final String CMD_START_PROCESS = "CMD_START_PROCESS";
 
     public static final String CMD_SEND_EVENT = "CMD_SEND_EVENT";
@@ -114,4 +116,8 @@ public class ConfigService {
 
 
     public static final int MAX_REDELIVERY_COUNT = 2;
+
+    public static final String MSG_SINGLETON_CMD = "P6_SINGLETON_CMD";
+
+    public static final String CMD_SINGLETON_PARALLEL_GATEWAY = "CMD_SINGLETON_PARALLEL_GATEWAY";
 }

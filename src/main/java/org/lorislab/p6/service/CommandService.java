@@ -20,28 +20,28 @@ public class CommandService {
     @JMSConnectionFactory("java:/JmsXA")
     private JMSContext context;
 
-    public void cmdDeploy(List<ProcessDeployment> deployments) throws Exception {
+    public void cmdStart(List<ProcessDeployment> deployments) throws Exception {
         if (deployments != null && !deployments.isEmpty()) {
             Queue cmd = context.createQueue(ConfigService.QUEUE_CMD);
             JMSProducer producer = context.createProducer();
             for (int i = 0; i < deployments.size(); i++) {
                 ProcessDeployment deployment = deployments.get(i);
-                Message msg = createDeploymentMessage(deployment);
+                Message msg = createStartMessage(deployment);
                 producer.send(cmd, msg);
             }
         }
     }
 
-    public void cmdDeploy(ProcessDeployment deployment) throws Exception {
+    public void cmdStart(ProcessDeployment deployment) throws Exception {
         Queue cmd = context.createQueue(ConfigService.QUEUE_CMD);
         JMSProducer producer = context.createProducer();
-        Message msg = createDeploymentMessage(deployment);
+        Message msg = createStartMessage(deployment);
         producer.send(cmd, msg);
     }
 
-    private Message createDeploymentMessage(ProcessDeployment deployment) throws Exception {
+    private Message createStartMessage(ProcessDeployment deployment) throws Exception {
         Message msg = context.createMessage();
-        msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_DEPLOY);
+        msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_START);
         msg.setStringProperty(ConfigService.MSG_PROCESS_DEF_GUID, deployment.getProcessDefinitionGuid());
         msg.setStringProperty(ConfigService.MSG_PROCESS_ID, deployment.getProcessId());
         msg.setStringProperty(ConfigService.MSG_PROCESS_VERSION, deployment.getProcessVersion());

@@ -33,7 +33,7 @@ public class TaskReponseService implements MessageListener {
     private RuntimeProcessService runtimeProcessService;
 
     @EJB
-    private TaskExecutorService taskExecutionService;
+    private TaskExecutorService taskExecutorService;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -67,7 +67,7 @@ public class TaskReponseService implements MessageListener {
 
             if (serviceTask != null) {
                 String data = message.getBody(String.class);
-                taskExecutionService.completeServiceTask(token, runtimeProcess, serviceTask, data);
+                taskExecutorService.completeServiceTask(token, runtimeProcess, serviceTask, data);
             } else {
                 log.error("No service task found the response {} {} {} {} {}", processId, processVersion, processInstanceId, tokenId, serviceTaskName);
             }

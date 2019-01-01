@@ -16,6 +16,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,16 +35,21 @@ public class GatewayExecutorService {
     @EJB
     private TokenService tokenService;
 
-    public void executeGateway(ProcessToken token, RuntimeProcess runtimeProcess, Gateway gateway) throws Exception {
+    @EJB
+    private ProcessSingletonService processSingletonService;
+
+    public void executeGateway(ProcessToken token, RuntimeProcess runtimeProcess, Gateway gateway, Message message) throws Exception {
         switch (gateway.getGatewayType()) {
             case PARALLEL:
                 switch (gateway.getSequenceFlow()) {
+                    case CONVERGING:
+                        processSingletonService.sendSingletonMessage(message);
+                        break;
                     case DIVERGING:
                         parallelDiverging(token, runtimeProcess, (ParallelGateway) gateway);
                         break;
-                    case CONVERGING:
-                        parallelConverging(token, runtimeProcess, (ParallelGateway) gateway);
-                        break;
+                    default:
+                        log.error("No supported parallel sequence flow: {}", gateway.getSequenceFlow());
                 }
                 break;
             default:
@@ -51,7 +57,24 @@ public class GatewayExecutorService {
         }
     }
 
-    private void parallelConverging(ProcessToken token, RuntimeProcess runtimeProcess, ParallelGateway gateway) throws Exception {
+    public void executeSingletonGateway(ProcessToken token, RuntimeProcess runtimeProcess, Gateway gateway) throws Exception {
+        switch (gateway.getGatewayType()) {
+            case PARALLEL:
+                switch (gateway.getSequenceFlow()) {
+                    case CONVERGING:
+                        parallelSingletonConverging(token, runtimeProcess, (ParallelGateway) gateway);
+                        break;
+                    default:
+                        log.error("No supported parallel singlenton sequence flow: {}", gateway.getSequenceFlow());
+                }
+                break;
+            default:
+                log.error("No supported gateway type: {}", gateway.getGatewayType());
+        }
+    }
+
+
+    private void parallelSingletonConverging(ProcessToken token, RuntimeProcess runtimeProcess, ParallelGateway gateway) throws Exception {
         ProcessInstance processInstance = token.getProcessInstance();
 
         ProcessToken gatewayToken = processTokenService.findByNodeNameAndProcessInstance(gateway.getName(), processInstance.getGuid());

@@ -29,7 +29,7 @@ public class EventExecutorService {
     @EJB
     private TokenService tokenService;
 
-    public void execute(ProcessToken token, RuntimeProcess runtimeProcess, Event event) throws Exception {
+    public void executeEvent(ProcessToken token, RuntimeProcess runtimeProcess, Event event) throws Exception {
 
         switch (event.getEventType()) {
             case START:

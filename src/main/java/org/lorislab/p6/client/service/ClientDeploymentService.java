@@ -53,9 +53,10 @@ public class ClientDeploymentService {
             String process = loadProcess();
             if (process != null) {
                 Message msg = context.createTextMessage(process);
+                msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_DEPLOY);
                 msg.setStringProperty(ConfigService.MSG_APP_NAME, application);
                 msg.setStringProperty(ConfigService.MSG_MODULE_NAME, module);
-                Queue queue = context.createQueue(ConfigService.QUEUE_DEPLOY);
+                Queue queue = context.createQueue(ConfigService.QUEUE_CMD);
                 context.createProducer().send(queue, msg);
             }
         } catch (Exception ex) {
