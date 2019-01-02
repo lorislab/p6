@@ -46,6 +46,9 @@ public class ProcessDefinition extends PersistentTraceable {
     @Column(name = "PROCESS_MODULE")
     private String module;
 
+    @Column(name = "PROCESS_RESOURCE")
+    private String resource;
+
     @OneToOne(fetch = FetchType.LAZY,
             mappedBy = "processDefinition",
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE},

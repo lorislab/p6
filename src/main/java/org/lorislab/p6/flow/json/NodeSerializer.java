@@ -26,7 +26,7 @@ public class NodeSerializer implements JsonbSerializer<Node> {
     @Override
     public void serialize(Node node, JsonGenerator generator, SerializationContext ctx) {
         generator.writeStartObject();
-        ctx.serialize(node.getClass().getName(), node, generator);
+        ctx.serialize(node.getNodeType().name(), node, generator);
         generator.writeEnd();
     }
 }

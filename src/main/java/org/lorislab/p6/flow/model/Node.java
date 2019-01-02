@@ -18,12 +18,15 @@ package org.lorislab.p6.flow.model;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.json.bind.annotation.JsonbTransient;
+
 @Data
 @RequiredArgsConstructor()
-public class Node {
+public abstract class Node {
 
     private String name;
 
+    @JsonbTransient
     private NodeType nodeType;
 
     public Node(NodeType nodeType) {

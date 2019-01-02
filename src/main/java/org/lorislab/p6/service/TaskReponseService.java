@@ -5,8 +5,6 @@ import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
 import org.lorislab.p6.flow.model.task.ServiceTask;
-import org.lorislab.p6.flow.model.task.Task;
-import org.lorislab.p6.flow.model.task.TaskType;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
@@ -54,11 +52,8 @@ public class TaskReponseService implements MessageListener {
                 runtimeProcess = runtimeProcessService.getRuntimeProcess(processInstance.getProcessId(), processInstance.getProcessVersion());
                 if (runtimeProcess != null) {
                     Node node = runtimeProcess.getNode(token.getNodeName());
-                    if (node.getNodeType() == NodeType.TASK) {
-                        Task task = (Task) node;
-                        if (task.getTaskType() == TaskType.SERVICE_TASK) {
-                            serviceTask = (ServiceTask) task;
-                        }
+                    if (node.getNodeType() == NodeType.SERVICE_TASK) {
+                        serviceTask = (ServiceTask) node;
                     }
                 }
             } else {

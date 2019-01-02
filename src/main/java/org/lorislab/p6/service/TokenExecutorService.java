@@ -3,9 +3,11 @@ package org.lorislab.p6.service;
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.Node;
-import org.lorislab.p6.flow.model.event.Event;
+import org.lorislab.p6.flow.model.event.EndEvent;
+import org.lorislab.p6.flow.model.event.StartEvent;
 import org.lorislab.p6.flow.model.gateway.Gateway;
-import org.lorislab.p6.flow.model.task.Task;
+import org.lorislab.p6.flow.model.gateway.ParallelGateway;
+import org.lorislab.p6.flow.model.task.ServiceTask;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
@@ -16,6 +18,8 @@ import org.lorislab.p6.service.exception.JMSRetryException;
 
 import javax.ejb.*;
 import javax.jms.*;
+
+import static org.lorislab.p6.flow.model.gateway.SequenceFlow.CONVERGING;
 
 @Slf4j
 @MessageDriven(
@@ -44,6 +48,9 @@ public class TokenExecutorService implements MessageListener {
     @EJB
     private GatewayExecutorService gatewayExecutionService;
 
+    @EJB
+    private ProcessSingletonService processSingletonService;
+
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void onMessage(Message message) {
@@ -62,14 +69,27 @@ public class TokenExecutorService implements MessageListener {
             Node node = runtimeProcess.getNode(token.getNodeName());
             log.info("Execute token: " + node);
             switch (node.getNodeType()) {
-                case EVENT:
-                    eventExecutionService.executeEvent(token, runtimeProcess, (Event) node);
+                case START_EVENT:
+                    eventExecutionService.startEvent(token, runtimeProcess, (StartEvent) node);
                     break;
-                case TASK:
-                    taskExecutionService.executeTask(token, runtimeProcess, (Task) node);
+                case END_EVENT:
+                    eventExecutionService.endEvent(token, runtimeProcess, (EndEvent) node);
                     break;
-                case GATEWAY:
-                    gatewayExecutionService.executeGateway(token, runtimeProcess, (Gateway) node, message);
+                case SERVICE_TASK:
+                    taskExecutionService.serviceTask(token, runtimeProcess, (ServiceTask) node);
+                    break;
+                case PARALLEL_GATEWAY:
+                    ParallelGateway pg = (ParallelGateway) node;
+                    switch (pg.getSequenceFlow()) {
+                        case CONVERGING:
+                            processSingletonService.sendSingletonMessage(message);
+                            break;
+                        case DIVERGING:
+                            gatewayExecutionService.parallelDiverging(token, runtimeProcess, pg);
+                            break;
+                        default:
+                            log.error("No supported parallel sequence flow: {}", pg.getSequenceFlow());
+                    }
                     break;
                 default:
                     log.error("No supported node type: {}", node.getNodeType());

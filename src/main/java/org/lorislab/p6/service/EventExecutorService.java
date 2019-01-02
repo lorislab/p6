@@ -1,7 +1,8 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.flow.model.event.Event;
+import org.lorislab.p6.flow.model.event.EndEvent;
+import org.lorislab.p6.flow.model.event.StartEvent;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.model.enums.ProcessInstanceStatus;
@@ -29,24 +30,10 @@ public class EventExecutorService {
     @EJB
     private TokenService tokenService;
 
-    public void executeEvent(ProcessToken token, RuntimeProcess runtimeProcess, Event event) throws Exception {
-
-        switch (event.getEventType()) {
-            case START:
-                startEvent(token, runtimeProcess, event);
-                break;
-            case END:
-                endEvent(token, runtimeProcess, event);
-                break;
-            default:
-                log.error("No supported event type: {}", event.getEventType());
-        }
-    }
-
-    private void startEvent(ProcessToken token, RuntimeProcess runtimeProcess, Event event) throws Exception {
+    public void startEvent(ProcessToken token, RuntimeProcess runtimeProcess, StartEvent event) throws Exception {
 
         ProcessInstance processInstance = token.getProcessInstance();
-        String nextNodeName = runtimeProcess.getFlow().getNextNodeName(event.getName());
+        String nextNodeName = runtimeProcess.getNextNodeName(event.getName());
 
         // update token
         token.setNodeName(nextNodeName);
@@ -56,7 +43,7 @@ public class EventExecutorService {
         tokenService.sendTokenMessage(processInstance, token);
     }
 
-    private void endEvent(ProcessToken token, RuntimeProcess runtimeProcess, Event event) throws Exception {
+    public void endEvent(ProcessToken token, RuntimeProcess runtimeProcess, EndEvent event) throws Exception {
 
         // update the process instance
         ProcessInstance processInstance = token.getProcessInstance();

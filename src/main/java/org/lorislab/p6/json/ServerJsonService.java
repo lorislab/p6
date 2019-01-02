@@ -1,6 +1,5 @@
 package org.lorislab.p6.json;
 
-import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.jpa.model.ProcessToken;
 
 import javax.json.bind.Jsonb;

@@ -7,9 +7,9 @@ import org.lorislab.p6.flow.model.NodeType;
 
 @Data
 @ToString(callSuper = true)
-public class ServiceTask extends Task {
+public class ServiceTask extends Node {
 
     public ServiceTask() {
-        super(TaskType.SERVICE_TASK);
+        super(NodeType.SERVICE_TASK);
     }
 }

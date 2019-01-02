@@ -17,8 +17,8 @@ package org.lorislab.p6.client.service;
 
 import org.lorislab.p6.client.json.ClientData;
 import org.lorislab.p6.client.json.DataItem;
-import org.lorislab.p6.flow.json.DataItemDeserializer;
-import org.lorislab.p6.flow.json.DataItemSerializer;
+import org.lorislab.p6.client.json.DataItemDeserializer;
+import org.lorislab.p6.client.json.DataItemSerializer;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;

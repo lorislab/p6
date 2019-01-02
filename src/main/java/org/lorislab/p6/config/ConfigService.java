@@ -82,7 +82,9 @@ public class ConfigService {
 
     public static final String MSG_MODULE_NAME = "P6_MODULE_NAME";
 
-    public static final String DEPLOYMENT_DESCRIPTOR = "p6.json";
+    public static final String MSG_RESOURCE_PATH = "P6_RESOURCE_PATH";
+
+    public static final String DEPLOYMENT_DESCRIPTOR = "/p6.properties";
 
     public static final String MSG_CMD = "P6_CMD";
 

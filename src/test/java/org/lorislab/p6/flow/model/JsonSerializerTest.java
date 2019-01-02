@@ -1,16 +1,10 @@
 package org.lorislab.p6.flow.model;
 
 import org.junit.Test;
-import org.lorislab.p6.client.json.ClientData;
 import org.lorislab.p6.client.service.ClientJsonService;
-import org.lorislab.p6.flow.json.DataItemDeserializer;
-import org.lorislab.p6.flow.json.DataItemSerializer;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 import org.lorislab.p6.json.ServerJsonService;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

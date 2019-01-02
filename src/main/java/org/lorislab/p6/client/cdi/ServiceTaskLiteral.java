@@ -25,10 +25,6 @@ public class ServiceTaskLiteral extends AnnotationLiteral<ServiceTask> implement
         this.name = name;
     }
 
-//    public ServiceTaskLiteral() {
-//        this("");
-//    }
-
     public String value() {
         return name;
     }

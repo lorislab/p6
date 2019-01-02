@@ -17,11 +17,17 @@ package org.lorislab.p6.flow.model;
 
 public enum NodeType {
 
-    TASK,
+    EXCLUSIVE_GATEWAY,
 
-    GATEWAY,
+    INCLUSIVE_GATEWAY,
 
-    EVENT,
+    PARALLEL_GATEWAY,
 
-    ACTIVITY
+    SERVICE_TASK,
+
+    START_EVENT,
+
+    END_EVENT,
+
+    CALL_ACTIVITY
 }

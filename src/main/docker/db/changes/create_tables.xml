@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
                    objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
-    <changeSet author="p6 (generated)" id="1546380400317-1">
+    <changeSet author="p6 (generated)" id="1546471042557-1">
         <createTable tableName="P6_PROCESS_DEF">
             <column name="C_GUID" type="VARCHAR(255)">
                 <constraints primaryKey="true" primaryKeyName="P6_PROCESS_DEFPK"/>
@@ -16,9 +16,10 @@
             <column name="PROCESS_MODULE" type="VARCHAR(255)"/>
             <column name="PROCESS_ID" type="VARCHAR(255)"/>
             <column name="PROCESS_VERSION" type="VARCHAR(255)"/>
+            <column name="PROCESS_RESOURCE" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-2">
+    <changeSet author="p6 (generated)" id="1546471042557-2">
         <createTable tableName="P6_PROCESS_DEF_CONTENT">
             <column name="C_GUID" type="VARCHAR(255)">
                 <constraints primaryKey="true" primaryKeyName="P6_PROCESS_DEF_CONTENTPK"/>
@@ -28,7 +29,7 @@
             <column name="PROCESS_DEF_GUID" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-3">
+    <changeSet author="p6 (generated)" id="1546471042557-3">
         <createTable tableName="P6_PROCESS_DEPLOYMENT">
             <column name="C_GUID" type="VARCHAR(255)">
                 <constraints primaryKey="true" primaryKeyName="P6_PROCESS_DEPLOYMENTPK"/>
@@ -43,7 +44,7 @@
             <column name="PROCESS_VERSION" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-4">
+    <changeSet author="p6 (generated)" id="1546471042557-4">
         <createTable tableName="P6_PROCESS_INSTANCE">
             <column name="C_GUID" type="VARCHAR(255)">
                 <constraints primaryKey="true" primaryKeyName="P6_PROCESS_INSTANCEPK"/>
@@ -60,7 +61,7 @@
             <column name="STATUS" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-5">
+    <changeSet author="p6 (generated)" id="1546471042557-5">
         <createTable tableName="P6_PROCESS_TOKEN">
             <column name="C_GUID" type="VARCHAR(255)">
                 <constraints primaryKey="true" primaryKeyName="P6_PROCESS_TOKENPK"/>
@@ -78,7 +79,7 @@
             <column name="TOKEN_STATUS" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-6">
+    <changeSet author="p6 (generated)" id="1546471042557-6">
         <createTable tableName="P6_PROCESS_TOKEN_PARENT">
             <column name="TOKEN_GUID" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -86,19 +87,19 @@
             <column name="parents" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-7">
+    <changeSet author="p6 (generated)" id="1546471042557-7">
         <addUniqueConstraint columnNames="PROCESS_ID, PROCESS_VERSION" constraintName="P6_PROCESS_DEF_IDX" tableName="P6_PROCESS_DEF"/>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-8">
+    <changeSet author="p6 (generated)" id="1546471042557-8">
         <addUniqueConstraint columnNames="PROCESS_INSTANCE_GUID, START_NODE_NAME" constraintName="P6_TOKEN_NODE_INSTANCE_ID" tableName="P6_PROCESS_TOKEN"/>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-9">
+    <changeSet author="p6 (generated)" id="1546471042557-9">
         <addForeignKeyConstraint baseColumnNames="PROCESS_DEF_GUID" baseTableName="P6_PROCESS_DEF_CONTENT" constraintName="FK85o05irv4mojceoxqlouxkf2r" deferrable="false" initiallyDeferred="false" referencedColumnNames="C_GUID" referencedTableName="P6_PROCESS_DEF" validate="true"/>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-10">
+    <changeSet author="p6 (generated)" id="1546471042557-10">
         <addForeignKeyConstraint baseColumnNames="PROCESS_INSTANCE_GUID" baseTableName="P6_PROCESS_TOKEN" constraintName="FK9q1ftjw5cgwyqayy88y8iif3r" deferrable="false" initiallyDeferred="false" referencedColumnNames="C_GUID" referencedTableName="P6_PROCESS_INSTANCE" validate="true"/>
     </changeSet>
-    <changeSet author="p6 (generated)" id="1546380400317-11">
+    <changeSet author="p6 (generated)" id="1546471042557-11">
         <addForeignKeyConstraint baseColumnNames="TOKEN_GUID" baseTableName="P6_PROCESS_TOKEN_PARENT" constraintName="FKiq17cspiuh4ebld2yx9a2gwaa" deferrable="false" initiallyDeferred="false" referencedColumnNames="C_GUID" referencedTableName="P6_PROCESS_TOKEN" validate="true"/>
     </changeSet>
 </databaseChangeLog>

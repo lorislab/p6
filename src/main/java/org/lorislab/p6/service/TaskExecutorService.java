@@ -3,7 +3,6 @@ package org.lorislab.p6.service;
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.task.ServiceTask;
-import org.lorislab.p6.flow.model.task.Task;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
@@ -33,22 +32,11 @@ public class TaskExecutorService {
     @EJB
     private TokenService tokenService;
 
-    public void executeTask(ProcessToken token, RuntimeProcess runtimeProcess, Task task) throws Exception {
-        switch (task.getTaskType()) {
-            case SERVICE_TASK:
-                serviceTask(token, runtimeProcess, (ServiceTask) task);
-                break;
-            default:
-                log.error("No supported task type: {}", task.getTaskType());
-        }
-    }
-
     public void completeServiceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task, String response) throws Exception {
-
 
         token = ServerJsonService.mergeData(token, response);
         ProcessInstance processInstance = token.getProcessInstance();
-        String next = runtimeProcess.getFlow().getNextNodeName(task.getName());
+        String next = runtimeProcess.getNextNodeName(task.getName());
 
         // create token
         token.setPreviousName(token.getNodeName());
@@ -59,7 +47,7 @@ public class TaskExecutorService {
         tokenService.sendTokenMessage(processInstance, token);
     }
 
-    private void serviceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task) throws Exception {
+    public void serviceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task) throws Exception {
 
         ProcessInstance processInstance = token.getProcessInstance();
 

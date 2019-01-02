@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lorislab.jee.jpa.exception.ConstraintException;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.json.JsonProcessFlowService;
+import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.jpa.model.*;
 import org.lorislab.p6.jpa.model.enums.ProcessInstanceStatus;
@@ -107,7 +108,7 @@ public class CommandExecutorService implements MessageListener {
         }
         RuntimeProcess process = runtimeProcessService.getRuntimeProcess(deployment.getProcessId(), deployment.getProcessVersion());
         if (process != null) {
-            List<String> nodes = process.getFlow().getStart();
+            List<Node> nodes = process.getStart();
             if (nodes != null && !nodes.isEmpty()) {
 
                 // create process instance
@@ -122,11 +123,11 @@ public class CommandExecutorService implements MessageListener {
 
                 // create start tokens
                 List<ProcessToken> tokens = new ArrayList<>(nodes.size());
-                for (String node : nodes) {
+                for (Node node : nodes) {
                     // create token
                     ProcessToken token = new ProcessToken();
-                    token.setNodeName(node);
-                    token.setStartNodeName(node);
+                    token.setNodeName(node.getName());
+                    token.setStartNodeName(node.getName());
                     token.setStatus(ProcessTokenStatus.IN_EXECUTION);
                     token.setProcessInstance(instance);
                     instance.getTokens().add(token);
@@ -158,7 +159,8 @@ public class CommandExecutorService implements MessageListener {
 
             String application = message.getStringProperty(ConfigService.MSG_APP_NAME);
             String module = message.getStringProperty(ConfigService.MSG_MODULE_NAME);
-            log.info("Start deployment {} - {}", application, module);
+            String resource = message.getStringProperty(ConfigService.MSG_RESOURCE_PATH);
+            log.info("Start deployment {} - {} - {}", application, module, resource);
             String data = message.getBody(String.class);
 
             ProcessFlow flow = JsonProcessFlowService.loadProcessFlow(data);
@@ -175,6 +177,7 @@ public class CommandExecutorService implements MessageListener {
             processDefinition.setApplication(application);
             processDefinition.setModule(module);
             processDefinition.setProcessId(processId);
+            processDefinition.setResource(resource);
             processDefinition.setProcessVersion(processVersion);
             ProcessContent content = new ProcessContent();
             content.setData(data.getBytes(StandardCharsets.UTF_8));

@@ -25,9 +25,14 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 import javax.jms.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,22 +55,42 @@ public class ClientDeploymentService {
         try {
             log.info("Start client deployment for the {} / {}", application, module);
 
-            String process = loadProcess();
-            if (process != null) {
-                Message msg = context.createTextMessage(process);
-                msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_DEPLOY);
-                msg.setStringProperty(ConfigService.MSG_APP_NAME, application);
-                msg.setStringProperty(ConfigService.MSG_MODULE_NAME, module);
-                Queue queue = context.createQueue(ConfigService.QUEUE_CMD);
-                context.createProducer().send(queue, msg);
+            Properties properties = new Properties();
+            try (InputStream in = this.getClass().getResourceAsStream(ConfigService.DEPLOYMENT_DESCRIPTOR)) {
+                if (in != null) {
+                    properties.load(in);
+                } else {
+                    log.warn("No deployment descriptor {} found!", ConfigService.DEPLOYMENT_DESCRIPTOR);
+                }
+            }
+            Set<String> resources = properties.stringPropertyNames();
+            if (!resources.isEmpty()) {
+                for (String resource : resources) {
+                    try {
+                        String process = loadProcess(resource);
+                        if (process != null) {
+                            Message msg = context.createTextMessage(process);
+                            msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_DEPLOY);
+                            msg.setStringProperty(ConfigService.MSG_APP_NAME, application);
+                            msg.setStringProperty(ConfigService.MSG_MODULE_NAME, module);
+                            msg.setStringProperty(ConfigService.MSG_RESOURCE_PATH, resource);
+                            Queue queue = context.createQueue(ConfigService.QUEUE_CMD);
+                            context.createProducer().send(queue, msg);
+                        }
+                    } catch (Exception ex) {
+                        log.error("Error start the deployment for the resource " + resource, ex);
+                    }
+                }
+            } else {
+                log.warn("The deployment descriptor {} is empty.", ConfigService.DEPLOYMENT_DESCRIPTOR);
             }
         } catch (Exception ex) {
-            log.error("Error deploy the process!", ex);
+            log.error("Error start the deployment for the module!", ex);
         }
     }
 
-    private String loadProcess() {
-        try (InputStream in = this.getClass().getResourceAsStream("/" + ConfigService.DEPLOYMENT_DESCRIPTOR);
+    private String loadProcess(String path) {
+        try (InputStream in = this.getClass().getResourceAsStream(path);
              InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
              BufferedReader br = new BufferedReader(reader)) {
             return br.lines().collect(Collectors.joining(System.lineSeparator()));

@@ -2,7 +2,6 @@ package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.p6.flow.model.Sequence;
-import org.lorislab.p6.flow.model.gateway.Gateway;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
@@ -16,7 +15,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -38,43 +36,7 @@ public class GatewayExecutorService {
     @EJB
     private ProcessSingletonService processSingletonService;
 
-    public void executeGateway(ProcessToken token, RuntimeProcess runtimeProcess, Gateway gateway, Message message) throws Exception {
-        switch (gateway.getGatewayType()) {
-            case PARALLEL:
-                switch (gateway.getSequenceFlow()) {
-                    case CONVERGING:
-                        processSingletonService.sendSingletonMessage(message);
-                        break;
-                    case DIVERGING:
-                        parallelDiverging(token, runtimeProcess, (ParallelGateway) gateway);
-                        break;
-                    default:
-                        log.error("No supported parallel sequence flow: {}", gateway.getSequenceFlow());
-                }
-                break;
-            default:
-                log.error("No supported gateway type: {}", gateway.getGatewayType());
-        }
-    }
-
-    public void executeSingletonGateway(ProcessToken token, RuntimeProcess runtimeProcess, Gateway gateway) throws Exception {
-        switch (gateway.getGatewayType()) {
-            case PARALLEL:
-                switch (gateway.getSequenceFlow()) {
-                    case CONVERGING:
-                        parallelSingletonConverging(token, runtimeProcess, (ParallelGateway) gateway);
-                        break;
-                    default:
-                        log.error("No supported parallel singlenton sequence flow: {}", gateway.getSequenceFlow());
-                }
-                break;
-            default:
-                log.error("No supported gateway type: {}", gateway.getGatewayType());
-        }
-    }
-
-
-    private void parallelSingletonConverging(ProcessToken token, RuntimeProcess runtimeProcess, ParallelGateway gateway) throws Exception {
+    public void parallelConverging(ProcessToken token, RuntimeProcess runtimeProcess, ParallelGateway gateway) throws Exception {
         ProcessInstance processInstance = token.getProcessInstance();
 
         ProcessToken gatewayToken = processTokenService.findByNodeNameAndProcessInstance(gateway.getName(), processInstance.getGuid());
@@ -92,7 +54,7 @@ public class GatewayExecutorService {
             gatewayToken.setPreviousName(token.getNodeName());
         }
 
-        Sequence sequence = runtimeProcess.getFlow().getSequence().get(gateway.getName());
+        Sequence sequence = runtimeProcess.getSequence(gateway.getName());
         List<String> from = sequence.getFrom();
         Set<String> parents = gatewayToken.getParents();
         log.info("FROM: {} PARENT: {}", from.size(), parents.size());
@@ -111,8 +73,8 @@ public class GatewayExecutorService {
         }
     }
 
-    private void parallelDiverging(ProcessToken token, RuntimeProcess runtimeProcess, ParallelGateway gateway) throws Exception {
-        Sequence seq = runtimeProcess.getFlow().getSequence().get(gateway.getName());
+    public void parallelDiverging(ProcessToken token, RuntimeProcess runtimeProcess, ParallelGateway gateway) throws Exception {
+        Sequence seq = runtimeProcess.getSequence(gateway.getName());
         if (seq != null && seq.getTo() != null) {
 
             ProcessInstance processInstance = token.getProcessInstance();

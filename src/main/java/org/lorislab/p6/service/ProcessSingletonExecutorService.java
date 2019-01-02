@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.ejb3.annotation.ClusteredSingleton;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.Node;
-import org.lorislab.p6.flow.model.event.Event;
-import org.lorislab.p6.flow.model.gateway.Gateway;
-import org.lorislab.p6.flow.model.task.Task;
+import org.lorislab.p6.flow.model.gateway.ParallelGateway;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
@@ -56,8 +54,15 @@ public class ProcessSingletonExecutorService implements MessageListener {
 
             Node node = runtimeProcess.getNode(token.getNodeName());
             switch (node.getNodeType()) {
-                case GATEWAY:
-                    gatewayExecutorService.executeSingletonGateway(token, runtimeProcess, (Gateway) node);
+                case PARALLEL_GATEWAY:
+                    ParallelGateway pg = (ParallelGateway) node;
+                    switch (pg.getSequenceFlow()) {
+                        case CONVERGING:
+                            gatewayExecutorService.parallelConverging(token, runtimeProcess, pg);
+                            break;
+                        default:
+                            log.error("No supported parallel singlenton sequence flow: {}", pg.getSequenceFlow());
+                    }
                     break;
                 default:
                     log.error("No supported singleton executor for node type: {}", node.getNodeType());
