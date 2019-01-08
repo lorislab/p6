@@ -20,30 +20,33 @@ import org.lorislab.p6.client.cdi.ServiceTask;
 import org.lorislab.p6.client.cdi.WorkflowProcess;
 import org.lorislab.p6.client.service.ServiceTaskItem;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
 
 @Slf4j
-@Named
-@RequestScoped
 @WorkflowProcess(processId = "org.lorislab.p6.example.Test1", processVersion = "1.0.0")
 public class Test1 {
 
-
-    public void service1(@Observes @ServiceTask("service1") ServiceTaskItem item) {
+    @ServiceTask("service1")
+    public void service1(ServiceTaskItem item) {
       log.info("Execute service1!");
     }
 
-    public void service2(@Observes @ServiceTask("service2") ServiceTaskItem item) {
+    @ServiceTask("service2")
+    public void service2(ServiceTaskItem item) {
         log.info("Execute service2!");
     }
 
-    public void service3(@Observes @ServiceTask("service3") ServiceTaskItem item) {
+    @ServiceTask("service3")
+    public void service3(ServiceTaskItem item) {
         log.info("Execute service3!");
     }
 
-    public void service4(@Observes @ServiceTask("service4") ServiceTaskItem item) {
+    @ServiceTask("service4")
+    public void service4(ServiceTaskItem item) {
         log.info("Execute service4!");
     }
 }

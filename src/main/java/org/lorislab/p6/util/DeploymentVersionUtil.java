@@ -78,7 +78,7 @@ public final class DeploymentVersionUtil {
      * @param storedVersion stored version from DB
      * @return true if the newVersion is greater then stored version.
      */
-    public static int convertVersionNumberToIntAndCompare(String newVersion, String storedVersion) {
+    private static int convertVersionNumberToIntAndCompare(String newVersion, String storedVersion) {
         try {
             Integer uploaded = Integer.valueOf(newVersion);
             Integer stored = Integer.valueOf(storedVersion);

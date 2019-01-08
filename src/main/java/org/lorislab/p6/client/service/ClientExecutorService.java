@@ -16,7 +16,8 @@
 package org.lorislab.p6.client.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.client.cdi.ServiceTaskLiteral;
+import org.lorislab.p6.client.cdi.ServiceTask;
+import org.lorislab.p6.client.cdi.ServiceTaskEvent;
 import org.lorislab.p6.client.cdi.WorkflowProcess;
 import org.lorislab.p6.config.ConfigService;
 
@@ -67,19 +68,20 @@ public class ClientExecutorService implements MessageListener {
 
             // find the bean and method to call.
             ObserverMethod<? super ServiceTaskItem> observer = null;
-            Set<ObserverMethod<? super ServiceTaskItem>> observers = bm.resolveObserverMethods(ServiceTaskItem.builder().build(), new ServiceTaskLiteral(serviceTask));
+            Set<ObserverMethod<? super ServiceTaskItem>> observers = bm.resolveObserverMethods(ServiceTaskItem.builder().build(), new ServiceTaskEvent.Literal(processId, processVersion,serviceTask));
             if (!observers.isEmpty()) {
                 Iterator<ObserverMethod<? super ServiceTaskItem>> iter = observers.iterator();
-                while (observer == null && iter.hasNext()) {
-                    ObserverMethod<? super ServiceTaskItem> item = iter.next();
-                    WorkflowProcess n = item.getBeanClass().getAnnotation(WorkflowProcess.class);
-                    if (n != null) {
-                        // handle multiple versions
-                        if (processId.equals(n.processId()) && processVersion.equals(n.processVersion())) {
-                            observer = item;
-                        }
-                    }
-                }
+                observer = iter.next();
+//                while (observer == null && iter.hasNext()) {
+//                    ObserverMethod<? super ServiceTaskItem> item = iter.next();
+//                    WorkflowProcess n = item.getBeanClass().getAnnotation(WorkflowProcess.class);
+//                    if (n != null) {
+//                        // handle multiple versions
+//                        if (processId.equals(n.processId()) && processVersion.equals(n.processVersion())) {
+//                            observer = item;
+//                        }
+//                    }
+//                }
             }
 
             if (observer == null) {

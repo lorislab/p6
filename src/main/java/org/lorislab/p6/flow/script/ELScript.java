@@ -60,8 +60,8 @@ public final class ELScript {
     }
 
     public void evaluateScript(final String script) {
-        ValueExpression expression = getExpressionFactory().createValueExpression(manager.getELContext(), expression(script), Object.class);
-        Object v = expression.getValue(manager.getELContext());
+        final Object result = getExpressionFactory()
+                .createValueExpression(manager.getELContext(), expression(script), Boolean.class).getValue(manager.getELContext());
     }
 
     /**
