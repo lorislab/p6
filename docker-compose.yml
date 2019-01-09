@@ -2,6 +2,15 @@ version: "3"
 
 services:
 
+  test:
+    container_name: test
+    image: jboss/wildfly:15.0.0.Final
+    ports:
+      - "8080:8080"
+      - "8787:8787"
+    networks:
+      - p6
+
   # Docker image for the P6
   p6:
     container_name: p6

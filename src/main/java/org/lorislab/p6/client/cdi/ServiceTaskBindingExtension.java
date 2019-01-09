@@ -16,6 +16,7 @@
 package org.lorislab.p6.client.cdi;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lorislab.p6.client.service.ServiceTaskItem;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
@@ -24,6 +25,7 @@ import javax.enterprise.inject.spi.*;
 import javax.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
 import javax.enterprise.inject.spi.configurator.AnnotatedParameterConfigurator;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 @Slf4j
@@ -50,36 +52,76 @@ public class ServiceTaskBindingExtension implements Extension {
     };
 
     <T> void processServiceTaskS(@Observes @WithAnnotations({ServiceTask.class}) ProcessAnnotatedType<T> processAnnotatedType) {
-        Set<AnnotatedMethodConfigurator<? super T>> mm = processAnnotatedType.configureAnnotatedType().methods();
-        for (AnnotatedMethodConfigurator<? super T> n : mm) {
-            for (AnnotatedParameterConfigurator p : n.params()) {
-                WorkflowProcess wp = processAnnotatedType.getAnnotatedType().getAnnotation(WorkflowProcess.class);
-                ServiceTask st = n.getAnnotated().getAnnotation(ServiceTask.class);
-                p.add(new ServiceTaskEvent() {
 
-                    @Override
-                    public Class<? extends Annotation> annotationType() {
-                        return ServiceTaskEvent.class;
-                    }
+        String defaultValue = "";
+        String defaultProcessId = "";
+        String defaultProcessVersion = "";
 
-                    @Override
-                    public String value() {
-                        return st.value();
-                    }
+        WorkflowProcess wp = processAnnotatedType.getAnnotatedType().getAnnotation(WorkflowProcess.class);
+        if (wp != null) {
+            defaultProcessId = wp.processId();
+            defaultProcessVersion = wp.processVersion();
+        }
 
-                    @Override
-                    public String processId() {
-                        return wp.processId();
-                    }
+        Set<AnnotatedMethodConfigurator<? super T>> methods = processAnnotatedType.configureAnnotatedType().methods();
+        if (methods != null) {
+            for (AnnotatedMethodConfigurator<? super T> method : methods) {
 
-                    @Override
-                    public String processVersion() {
-                        return wp.processVersion();
+                Method javaMethod = method.getAnnotated().getJavaMember();
+
+                ServiceTask st = method.getAnnotated().getAnnotation(ServiceTask.class);
+                if (st != null) {
+                    defaultValue = st.value();
+                    if (!st.processId().isEmpty()) {
+                        defaultProcessId = st.processId();
                     }
-                });
-                log.info("Found service task: {}.{} add the Observers!", n.getAnnotated().getJavaMember().getDeclaringClass().getSimpleName(), n.getAnnotated().getJavaMember().getName());
-                p.add(annotation);
+                    if (!st.processVersion().isEmpty()) {
+                        defaultProcessVersion = st.processVersion();
+                    }
+                }
+
+                if (method.params() != null) {
+                    for (AnnotatedParameterConfigurator parameter : method.params()) {
+
+                        AnnotatedParameter ap = parameter.getAnnotated();
+                        ServiceTask anno = ap.getAnnotation(ServiceTask.class);
+
+                        if ((anno != null || st != null) && ap.getJavaParameter().getType().isAssignableFrom(ServiceTaskItem.class)) {
+
+                            String value = defaultValue;
+                            String processId = defaultProcessId;
+                            String processVersion = defaultProcessVersion;
+
+                            // parameter annotation value
+                            if (anno != null) {
+                                value = anno.value();
+                                if (!anno.processId().isEmpty()) {
+                                    processId = anno.processId();
+                                }
+                                if (!anno.processVersion().isEmpty()) {
+                                    processVersion = anno.processVersion();
+                                }
+                                parameter.remove((a) -> a.equals(anno));
+                            }
+
+                            if (processId.isEmpty() || processVersion.isEmpty() || value.isEmpty()) {
+                                log.error("No valid configuration for service task: {}.{} {} {} {}", javaMethod.getDeclaringClass().getName(), javaMethod.getName(), processId, processVersion, value);
+                                throw new RuntimeException("No valid configuration for service task: " + javaMethod.getDeclaringClass().getName() + "." + javaMethod.getName());
+                            }
+
+                            // add the Observers annotation
+                            if (!ap.isAnnotationPresent(Observes.class)) {
+                                parameter.add(annotation);
+                            }
+
+                            // add the service task annotation
+                            parameter.add(ServiceTask.Literal.annotation(processId, processVersion, value));
+                            log.info("Registre service task: {}.{} {} {} {}", javaMethod.getDeclaringClass().getName(), javaMethod.getName(), processId, processVersion, value);
+                        }
+                    }
+                }
             }
         }
     }
+
 }

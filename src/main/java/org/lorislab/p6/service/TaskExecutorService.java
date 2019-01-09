@@ -17,6 +17,7 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lorislab.jee.annotation.LoggerService;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 import org.lorislab.p6.jpa.model.ProcessInstance;
@@ -48,7 +49,7 @@ public class TaskExecutorService {
     @EJB
     private TokenService tokenService;
 
-    public void completeServiceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task, String response) throws Exception {
+    public void completeServiceTask(ProcessToken token, RuntimeProcess runtimeProcess, ServiceTask task, @LoggerService.Exclude String response) throws Exception {
 
         token = ServerJsonService.mergeData(token, response);
         ProcessInstance processInstance = token.getProcessInstance();

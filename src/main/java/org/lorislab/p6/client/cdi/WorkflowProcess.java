@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface WorkflowProcess {
 
-    String processId();
+    String processId() default "";
 
     String processVersion() default "";
 

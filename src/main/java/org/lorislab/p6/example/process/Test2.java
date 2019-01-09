@@ -20,33 +20,35 @@ import org.lorislab.p6.client.cdi.ServiceTask;
 import org.lorislab.p6.client.cdi.WorkflowProcess;
 import org.lorislab.p6.client.service.ServiceTaskItem;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Named;
-
 @Slf4j
-@WorkflowProcess(processId = "org.lorislab.p6.example.Test1", processVersion = "1.0.0")
-public class Test1 {
+@WorkflowProcess(processId = "org.lorislab.p6.example.Test2", processVersion = "1.0.0")
+public class Test2 {
 
     @ServiceTask(value = "service1")
     public void service1(ServiceTaskItem item) {
-      log.info("Execute service1!");
+        String parameter = item.getParameter("parameter");
+        log.info("Execute service1! {}", parameter );
+        item.addResult("parameter", "SERVICE1");
     }
 
     @ServiceTask(value = "service2")
     public void service2(ServiceTaskItem item) {
-        log.info("Execute service2!");
+        String parameter = item.getParameter("parameter");
+        log.info("Execute service2! {}", parameter );
+        item.addResult("parameter", "SERVICE2");
     }
 
     @ServiceTask(value = "service3")
     public void service3(ServiceTaskItem item) {
-        log.info("Execute service3!");
+        String parameter = item.getParameter("parameter");
+        log.info("Execute service3! {}", parameter );
+        item.addResult("parameter", "SERVICE3");
     }
 
     @ServiceTask(value = "service4")
     public void service4(ServiceTaskItem item) {
-        log.info("Execute service4!");
+        String parameter = item.getParameter("parameter");
+        log.info("Execute service4! {}", parameter );
+        item.addResult("parameter", "SERVICE4");
     }
 }

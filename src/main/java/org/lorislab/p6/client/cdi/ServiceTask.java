@@ -15,11 +15,9 @@
  */
 package org.lorislab.p6.client.cdi;
 
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
@@ -27,5 +25,66 @@ import java.lang.annotation.Target;
 public @interface ServiceTask {
 
     String value();
+
+    String processId() default "";
+
+    String processVersion() default "";
+
+    final class Literal extends AnnotationLiteral<ServiceTask> implements ServiceTask {
+
+        private String value;
+
+        private String processId;
+
+        private String processVersion;
+
+        public Literal(String processId, String processVersion, String value) {
+            this.value = value;
+            this.processId = processId;
+            this.processVersion = processVersion;
+        }
+
+        @Override
+        public String value() {
+            return value;
+        }
+
+        @Override
+        public String processId() {
+            return processId;
+        }
+
+        @Override
+        public String processVersion() {
+            return processVersion;
+        }
+
+        static ServiceTask annotation(final String processId, final String processVersion, final String value) {
+            return new ServiceTask() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return ServiceTask.class;
+                }
+
+                @Override
+                public String value() {
+                    return value;
+                }
+
+                @Override
+                public String processId() {
+                    return processId;
+                }
+
+                @Override
+                public String processVersion() {
+                    return processVersion;
+                }
+            };
+        }
+
+    }
+
+
 
 }

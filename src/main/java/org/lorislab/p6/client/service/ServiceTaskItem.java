@@ -15,36 +15,36 @@
  */
 package org.lorislab.p6.client.service;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
+import lombok.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Builder
 public class ServiceTaskItem {
 
     @Getter
+    @Setter(value = AccessLevel.PACKAGE)
     private String processId;
 
     @Getter
+    @Setter(value = AccessLevel.PACKAGE)
     private String processVersion;
 
     @Getter
+    @Setter(value = AccessLevel.PACKAGE)
     private String processInstanceId;
 
     @Getter
+    @Setter(value = AccessLevel.PACKAGE)
     private String serviceTaskName;
 
     @Getter
+    @Setter(value = AccessLevel.PACKAGE)
     private String tokenId;
 
-    @Singular
+    @Getter(value = AccessLevel.PACKAGE)
     private Map<String, Object> parameters = new HashMap<>();
 
-    @Singular
     @Getter(value = AccessLevel.PACKAGE)
     private Map<String, Object> results = new HashMap<>();
 
@@ -63,4 +63,9 @@ public class ServiceTaskItem {
         }
     }
 
+    void addParameters(Map<String, Object> data) {
+        if (data != null) {
+            parameters.putAll(data);
+        }
+    }
 }

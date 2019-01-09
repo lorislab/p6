@@ -17,8 +17,6 @@ package org.lorislab.p6.client.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.p6.client.cdi.ServiceTask;
-import org.lorislab.p6.client.cdi.ServiceTaskEvent;
-import org.lorislab.p6.client.cdi.WorkflowProcess;
 import org.lorislab.p6.config.ConfigService;
 
 import javax.ejb.ActivationConfigProperty;
@@ -68,20 +66,14 @@ public class ClientExecutorService implements MessageListener {
 
             // find the bean and method to call.
             ObserverMethod<? super ServiceTaskItem> observer = null;
-            Set<ObserverMethod<? super ServiceTaskItem>> observers = bm.resolveObserverMethods(ServiceTaskItem.builder().build(), new ServiceTaskEvent.Literal(processId, processVersion,serviceTask));
+            Set<ObserverMethod<? super ServiceTaskItem>> observers = bm.resolveObserverMethods(new ServiceTaskItem(), new ServiceTask.Literal(processId, processVersion,serviceTask));
             if (!observers.isEmpty()) {
+
                 Iterator<ObserverMethod<? super ServiceTaskItem>> iter = observers.iterator();
                 observer = iter.next();
-//                while (observer == null && iter.hasNext()) {
-//                    ObserverMethod<? super ServiceTaskItem> item = iter.next();
-//                    WorkflowProcess n = item.getBeanClass().getAnnotation(WorkflowProcess.class);
-//                    if (n != null) {
-//                        // handle multiple versions
-//                        if (processId.equals(n.processId()) && processVersion.equals(n.processVersion())) {
-//                            observer = item;
-//                        }
-//                    }
-//                }
+                if (observers.size() > 1) {
+                    log.warn("Multiple service tasks implementations! For service task: {} {} {}", processId, processVersion, serviceTask);
+                }
             }
 
             if (observer == null) {
@@ -94,10 +86,13 @@ public class ClientExecutorService implements MessageListener {
                     data = ClientJsonService.loadData(txt);
                 }
 
-                ServiceTaskItem item = ServiceTaskItem.builder()
-                        .processId(processId).processVersion(processVersion)
-                        .processInstanceId(processInstanceId).tokenId(tokenId)
-                        .serviceTaskName(serviceTask).build();
+                ServiceTaskItem item = new ServiceTaskItem();
+                item.setProcessId(processId);
+                item.setProcessVersion(processVersion);
+                item.setProcessInstanceId(processInstanceId);
+                item.setTokenId(tokenId);
+                item.addParameters(data);
+                item.setServiceTaskName(serviceTask);
 
                 observer.notify(item);
 
