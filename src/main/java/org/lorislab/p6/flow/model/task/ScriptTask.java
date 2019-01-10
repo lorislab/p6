@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lorislab.p6.flow.model;
 
-public enum NodeType {
+package org.lorislab.p6.flow.model.task;
 
-    EXCLUSIVE_GATEWAY,
+import lombok.Data;
+import lombok.ToString;
+import org.lorislab.p6.flow.model.Node;
+import org.lorislab.p6.flow.model.NodeType;
 
-    INCLUSIVE_GATEWAY,
+@Data
+@ToString(callSuper = true)
+public class ScriptTask extends Node {
 
-    PARALLEL_GATEWAY,
+    private String script;
 
-    SERVICE_TASK,
-
-    SCRIPT_TASK,
-
-    START_EVENT,
-
-    END_EVENT,
-
-    CALL_ACTIVITY
+    public ScriptTask() {
+        super(NodeType.SCRIPT_TASK);
+    }
 }

@@ -46,6 +46,25 @@ public class ServerJsonService {
         return JSON.toJson(serverData);
     }
 
+    public static Map<String, Object> loadData(ProcessToken token) {
+        Map<String, Object> data = new HashMap<>();
+        if (token.getData() != null) {
+            String tmp = new String(token.getData(), StandardCharsets.UTF_8);
+            if (!tmp.isBlank()) {
+                data = loadData(tmp);
+            }
+        }
+        return data;
+    }
+
+    public static ProcessToken saveData(ProcessToken token , Map<String, Object> data) {
+        if (data != null) {
+            String tmp = ServerJsonService.saveData(data);
+            token.setData(tmp.getBytes(StandardCharsets.UTF_8));
+        }
+        return token;
+    }
+
     public static ProcessToken mergeData(ProcessToken token , String input) {
         if (input != null && !input.isBlank()) {
             Map<String, Object> data = new HashMap<>();

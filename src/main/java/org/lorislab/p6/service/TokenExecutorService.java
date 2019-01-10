@@ -23,6 +23,7 @@ import org.lorislab.p6.flow.model.event.EndEvent;
 import org.lorislab.p6.flow.model.event.StartEvent;
 import org.lorislab.p6.flow.model.gateway.Gateway;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
+import org.lorislab.p6.flow.model.task.ScriptTask;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
@@ -93,6 +94,9 @@ public class TokenExecutorService implements MessageListener {
                     break;
                 case SERVICE_TASK:
                     taskExecutionService.serviceTask(token, runtimeProcess, (ServiceTask) node);
+                    break;
+                case SCRIPT_TASK:
+                    taskExecutionService.scriptTask(token, runtimeProcess, (ScriptTask) node);
                     break;
                 case PARALLEL_GATEWAY:
                     ParallelGateway pg = (ParallelGateway) node;

@@ -19,7 +19,9 @@ package org.lorislab.p6.service;
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.jee.annotation.LoggerService;
 import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.flow.model.task.ScriptTask;
 import org.lorislab.p6.flow.model.task.ServiceTask;
+import org.lorislab.p6.flow.script.ScriptEngine;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
@@ -33,6 +35,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.jms.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Slf4j
 @Stateless
@@ -82,5 +85,21 @@ public class TaskExecutorService {
         // send request to the application.
         Queue queue = context.createQueue(ConfigService.QUEUE_REQUEST);
         context.createProducer().send(queue, request);
+    }
+
+    public void scriptTask(ProcessToken token, RuntimeProcess runtimeProcess, ScriptTask task) throws Exception {
+
+        Map<String, Object> data = ServerJsonService.loadData(token);
+        Map<String, Object> result = ScriptEngine.runScript(task.getScript(), data);
+        token = ServerJsonService.saveData(token, result);
+
+        // create token
+        token.setPreviousName(token.getNodeName());
+        token.setNodeName(runtimeProcess.getNextNodeName(task.getName()));
+        processTokenService.update(token);
+
+        // send token message
+        tokenService.sendTokenMessage(token.getProcessInstance(), token);
+
     }
 }

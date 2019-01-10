@@ -1,0 +1,51 @@
+{
+  "processId": "org.lorislab.p6.example.ScriptTaskTest",
+  "processVersion": "1.0.0",
+  "nodes": [
+    {
+      "START_EVENT": {
+        "name": "start"
+      }
+    },
+    {
+      "SCRIPT_TASK": {
+        "name": "scriptTask1",
+        "script": "params.a=\"text\";\nlog.info(\"test\", null);\nSystem.out.println(\"running script task\");"
+      }
+    },
+    {
+      "SCRIPT_TASK": {
+        "name": "scriptTask2",
+        "script": "System.out.println(\"Parameters: \" += params.a);"
+      }
+    },
+    {
+      "END_EVENT": {
+        "name": "end"
+      }
+    }
+  ],
+  "sequence": {
+    "start": {
+      "to": [
+        "scriptTask1"
+      ]
+    },
+    "scriptTask1": {
+      "from": [
+        "start"
+      ],
+      "to": [
+        "scriptTask2"
+      ]
+    },
+    "scriptTask2": {
+      "from": [
+        "scriptTask1"
+      ],
+      "to": [
+        "end"
+      ]
+    }
+  }
+}

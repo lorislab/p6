@@ -23,6 +23,7 @@ import org.lorislab.p6.flow.model.event.StartEvent;
 import org.lorislab.p6.flow.model.gateway.ExclusiveGateway;
 import org.lorislab.p6.flow.model.gateway.InclusiveGateway;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
+import org.lorislab.p6.flow.model.task.ScriptTask;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 
 import javax.json.bind.JsonbException;
@@ -43,6 +44,7 @@ public class NodeDeserializer implements JsonbDeserializer<Node> {
 
         // tasks
         MAPPING.put(NodeType.SERVICE_TASK, ServiceTask.class);
+        MAPPING.put(NodeType.SCRIPT_TASK, ScriptTask.class);
 
         // gateway
         MAPPING.put(NodeType.PARALLEL_GATEWAY, ParallelGateway.class);
