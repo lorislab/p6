@@ -19,6 +19,9 @@ import lombok.Data;
 import lombok.ToString;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
+import org.lorislab.p6.flow.model.task.ServiceTask;
+
+import javax.json.JsonObject;
 
 @Data
 @ToString(callSuper = true)
@@ -26,5 +29,11 @@ public class StartEvent extends Node {
 
     public StartEvent() {
         super(NodeType.START_EVENT);
+    }
+
+    public static StartEvent fromJson(JsonObject json) {
+        StartEvent result = new StartEvent();
+        result.updateJson(json);
+        return result;
     }
 }

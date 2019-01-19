@@ -21,6 +21,9 @@ import lombok.ToString;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
 
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 @Data
 @ToString(callSuper = true)
 public class ScriptTask extends Node {
@@ -29,5 +32,19 @@ public class ScriptTask extends Node {
 
     public ScriptTask() {
         super(NodeType.SCRIPT_TASK);
+    }
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        JsonObjectBuilder builder = super.toJson();
+        builder.add("script", script);
+        return builder;
+    }
+
+    public static ScriptTask fromJson(JsonObject json) {
+        ScriptTask result = new ScriptTask();
+        result.updateJson(json);
+        result.script = json.getString("script");
+        return result;
     }
 }

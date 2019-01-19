@@ -19,6 +19,10 @@ import lombok.Data;
 import lombok.ToString;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
+import org.lorislab.p6.flow.model.gateway.ParallelGateway;
+
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 @Data
 @ToString(callSuper = true)
@@ -28,5 +32,19 @@ public class CallActivity extends Node {
 
     public CallActivity() {
         super(NodeType.CALL_ACTIVITY);
+    }
+
+    @Override
+    public JsonObjectBuilder toJson() {
+        JsonObjectBuilder builder = super.toJson();
+        builder.add("activity", activity);
+        return builder;
+    }
+
+    public static CallActivity fromJson(JsonObject json) {
+        CallActivity result = new CallActivity();
+        result.updateJson(json);
+        result.activity = json.getString("activity");
+        return result;
     }
 }

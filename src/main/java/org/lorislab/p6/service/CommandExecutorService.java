@@ -116,54 +116,8 @@ public class CommandExecutorService implements MessageListener {
     private void startProcess(Message message) throws Exception {
         String processId = message.getStringProperty(ConfigService.MSG_PROCESS_ID);
         String processInstanceId = message.getStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID);
-
-        ProcessDeployment deployment = processDeploymentService.findByProcessId(processId);
-        if (deployment == null) {
-            log.error("No process found in the deployment for the process id: {}", processId);
-            return;
-        }
-        RuntimeProcess process = runtimeProcessService.getRuntimeProcess(deployment.getProcessId(), deployment.getProcessVersion());
-        if (process != null) {
-            List<Node> nodes = process.getStart();
-            if (nodes != null && !nodes.isEmpty()) {
-
-                // create process instance
-                ProcessInstance instance = new ProcessInstance();
-                if (processInstanceId != null || !processInstanceId.isBlank()) {
-                    instance.setGuid(processInstanceId);
-                }
-                instance.setStatus(ProcessInstanceStatus.IN_EXECUTION);
-                instance.setProcessId(process.getDefinition().getProcessId());
-                instance.setProcessDefinitionGuid(process.getDefinition().getGuid());
-                instance.setProcessVersion(process.getDefinition().getProcessVersion());
-
-                // create start tokens
-                List<ProcessToken> tokens = new ArrayList<>(nodes.size());
-                for (Node node : nodes) {
-                    // create token
-                    ProcessToken token = new ProcessToken();
-                    token.setNodeName(node.getName());
-                    token.setStartNodeName(node.getName());
-                    token.setStatus(ProcessTokenStatus.IN_EXECUTION);
-                    token.setProcessInstance(instance);
-                    instance.getTokens().add(token);
-                    tokens.add(token);
-                }
-
-                // send token message
-                tokenService.sendTokenMessages(instance, tokens);
-
-                // saveProcessFlow the process instance
-                instance = processInstanceService.create(instance);
-                processInstanceId = instance.getGuid();
-
-            } else {
-                log.error("No start events devfined for the process id: {}", process.getDefinition().getProcessId());
-            }
-            log.info("Starting the process {}. Process instance id: {}", processId, processInstanceId);
-        } else {
-            log.error("No runtime process found for the process id: {}", processId);
-        }
+        String data = message.getBody(String.class);
+        commandService.startProcess(processId, processInstanceId, data);
     }
 
     private void deploy(Message message) {

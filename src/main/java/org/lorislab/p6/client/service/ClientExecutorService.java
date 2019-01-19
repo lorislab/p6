@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.jms.*;
+import javax.ws.rs.client.Client;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -82,28 +83,23 @@ public class ClientExecutorService implements MessageListener {
                 Map<String, Object> data = null;
                 String txt = message.getBody(String.class);
                 log.info("Data: {}", txt);
-                if (txt != null && !txt.isBlank()) {
-                    data = ClientJsonService.loadData(txt);
-                }
 
                 ServiceTaskItem item = new ServiceTaskItem();
                 item.setProcessId(processId);
                 item.setProcessVersion(processVersion);
                 item.setProcessInstanceId(processInstanceId);
                 item.setTokenId(tokenId);
-                item.addParameters(data);
+                item.setParameters(ClientJsonService.fromString(txt));
                 item.setServiceTaskName(serviceTask);
 
                 observer.notify(item);
 
                 response = context.createTextMessage();
+
                 // check if the method is not async and get the results.
                 if (!observer.isAsync()) {
-                    Map<String, Object> results = item.getResults();
-                    if (results != null && !results.isEmpty()) {
-                        String tmp = ClientJsonService.saveData(results);
-                        response.setText(tmp);
-                    }
+                    String tmp = ClientJsonService.toString(item.getResults());
+                    response.setText(tmp);
                 }
 
                 response.setStringProperty(ConfigService.MSG_PROCESS_ID, processId);

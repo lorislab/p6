@@ -17,8 +17,9 @@ package org.lorislab.p6.client.service;
 
 import lombok.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+import java.util.*;
 
 public class ServiceTaskItem {
 
@@ -42,15 +43,25 @@ public class ServiceTaskItem {
     @Setter(value = AccessLevel.PACKAGE)
     private String tokenId;
 
-    @Getter(value = AccessLevel.PACKAGE)
-    private Map<String, Object> parameters = new HashMap<>();
+    @Setter(value = AccessLevel.PACKAGE)
+    private Map parameters = new HashMap<>();
 
     @Getter(value = AccessLevel.PACKAGE)
     private Map<String, Object> results = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
+    public Set<String> getParameterNames() {
+        return new HashSet<String>(parameters.keySet());
+    }
 
+    @SuppressWarnings("unchecked")
     public <T> T getParameter(String name) {
         return (T) parameters.get(name);
+    }
+
+    public <T> T getParameter(String name, Class<T> clazz) {
+        Object value = parameters.get(name);
+        return ClientJsonService.fromValue(value, clazz);
     }
 
     public void addResult(String name, Object value) {
@@ -63,9 +74,4 @@ public class ServiceTaskItem {
         }
     }
 
-    void addParameters(Map<String, Object> data) {
-        if (data != null) {
-            parameters.putAll(data);
-        }
-    }
 }

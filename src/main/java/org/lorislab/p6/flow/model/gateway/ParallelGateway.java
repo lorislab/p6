@@ -18,10 +18,18 @@ package org.lorislab.p6.flow.model.gateway;
 import lombok.Data;
 import org.lorislab.p6.flow.model.NodeType;
 
+import javax.json.JsonObject;
+
 @Data
 public class ParallelGateway extends Gateway {
 
     public ParallelGateway() {
         super(NodeType.PARALLEL_GATEWAY);
+    }
+
+    public static ParallelGateway fromJson(JsonObject json) {
+        ParallelGateway result = new ParallelGateway();
+        result.updateJson(json);
+        return result;
     }
 }

@@ -24,7 +24,6 @@ import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.model.enums.ProcessTokenStatus;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
-import org.lorislab.p6.json.ServerJsonService;
 import org.lorislab.p6.runtime.RuntimeProcess;
 
 import javax.ejb.EJB;

@@ -15,15 +15,13 @@
  */
 package org.lorislab.p6.client.service;
 
-import org.lorislab.p6.client.json.ClientData;
-import org.lorislab.p6.client.json.DataItem;
-import org.lorislab.p6.client.json.DataItemDeserializer;
-import org.lorislab.p6.client.json.DataItemSerializer;
-
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
-import java.util.HashMap;
+import java.io.StringReader;
 import java.util.Map;
 
 public class ClientJsonService {
@@ -31,33 +29,29 @@ public class ClientJsonService {
     private static final Jsonb JSON;
 
     static {
-        JsonbConfig config = new JsonbConfig()
-                .withFormatting(true)
-                .withDeserializers(new DataItemDeserializer())
-                .withSerializers(new DataItemSerializer());
+        JsonbConfig config = new JsonbConfig().withFormatting(true);
         JSON = JsonbBuilder.create(config);
     }
 
-    public static Map<String, Object> loadData(String data) {
-        ClientData clientData = JSON.fromJson(data, ClientData.class);
-        Map<String, Object > result = new HashMap<>();
-        for (Map.Entry<String, DataItem> e : clientData.getData().entrySet()) {
-            Object d = null;
-            if (e.getValue() != null) {
-                d = e.getValue().getData();
-            }
-            result.put(e.getKey(), d);
+    public static Map fromString(String data) {
+        if (data != null) {
+            return JSON.fromJson(data, Map.class);
         }
-        return result;
+        return null;
     }
 
-    public static String saveData(Map<String, Object> data) {
-        ClientData clientData = new ClientData();
-        for (Map.Entry<String, Object> e : data.entrySet()) {
-            DataItem item = new DataItem();
-            item.setData(e.getValue());
-            clientData.getData().put(e.getKey(), item);
+    public static <T> T fromValue(Object value, Class<T> clazz) {
+        if (value != null) {
+            String data = JSON.toJson(value);
+            return JSON.fromJson(data, clazz);
         }
-        return JSON.toJson(clientData);
+        return null;
+    }
+
+    public static String toString(Object data) {
+        if (data != null) {
+            return JSON.toJson(data);
+        }
+        return null;
     }
 }

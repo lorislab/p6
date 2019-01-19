@@ -20,11 +20,19 @@ import lombok.ToString;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
 
+import javax.json.JsonObject;
+
 @Data
 @ToString(callSuper = true)
 public class EndEvent extends Node {
 
     public EndEvent() {
         super(NodeType.END_EVENT);
+    }
+
+    public static EndEvent fromJson(JsonObject json) {
+        EndEvent result = new EndEvent();
+        result.updateJson(json);
+        return result;
     }
 }

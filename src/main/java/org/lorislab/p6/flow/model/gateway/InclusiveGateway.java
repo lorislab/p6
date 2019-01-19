@@ -19,11 +19,19 @@ import lombok.Data;
 import lombok.ToString;
 import org.lorislab.p6.flow.model.NodeType;
 
+import javax.json.JsonObject;
+
 @Data
 @ToString(callSuper = true)
 public class InclusiveGateway extends Gateway {
 
     public InclusiveGateway() {
         super(NodeType.INCLUSIVE_GATEWAY);
+    }
+
+    public static InclusiveGateway fromJson(JsonObject json) {
+        InclusiveGateway result = new InclusiveGateway();
+        result.updateJson(json);
+        return result;
     }
 }

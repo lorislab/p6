@@ -3,95 +3,86 @@
   "processVersion": "1.0.0",
   "nodes": [
     {
-      "START_EVENT": {
-        "name": "start"
+      "name": "start",
+      "nodeType": "START_EVENT",
+      "sequence": {
+        "to": [
+          "service1"
+        ]
       }
     },
     {
-      "SERVICE_TASK": {
-        "name": "service1"
+      "name": "service1",
+      "nodeType": "SERVICE_TASK",
+      "sequence": {
+        "from": [
+          "start"
+        ],
+        "to": [
+          "gateway1"
+        ]
       }
     },
     {
-      "PARALLEL_GATEWAY": {
-        "name": "gateway1",
-        "sequenceFlow": "DIVERGING"
+      "name": "gateway1",
+      "nodeType": "PARALLEL_GATEWAY",
+      "sequence": {
+        "from": [
+          "service1"
+        ],
+        "to": [
+          "service3",
+          "service4"
+        ]
+      },
+      "sequenceFlow": "DIVERGING"
+    },
+    {
+      "name": "service3",
+      "nodeType": "SERVICE_TASK",
+      "sequence": {
+        "from": [
+          "gateway1"
+        ],
+        "to": [
+          "gateway2"
+        ]
       }
     },
     {
-      "SERVICE_TASK": {
-        "name": "service3"
+      "name": "service4",
+      "nodeType": "SERVICE_TASK",
+      "sequence": {
+        "from": [
+          "gateway1"
+        ],
+        "to": [
+          "gateway2"
+        ]
       }
     },
     {
-      "SERVICE_TASK": {
-        "name": "service4"
-      }
+      "name": "gateway2",
+      "nodeType": "PARALLEL_GATEWAY",
+      "sequence": {
+        "from": [
+          "service3",
+          "service4"
+        ],
+        "to": [
+          "end"
+        ]
+      },
+      "sequenceFlow": "CONVERGING"
     },
     {
-      "PARALLEL_GATEWAY": {
-        "name": "gateway2",
-        "sequenceFlow": "CONVERGING"
-      }
-    },
-    {
-      "END_EVENT": {
-        "name": "end"
+      "name": "end",
+      "nodeType": "END_EVENT",
+      "sequence": {
+        "from": [
+          "gateway2"
+        ]
       }
     }
-  ],
-  "sequence": {
-    "gateway2": {
-      "from": [
-        "service3",
-        "service4"
-      ],
-      "to": [
-        "end"
-      ]
-    },
-    "gateway1": {
-      "from": [
-        "service1"
-      ],
-      "to": [
-        "service3",
-        "service4"
-      ]
-    },
-    "start": {
-      "to": [
-        "service1"
-      ]
-    },
-    "service1": {
-      "from": [
-        "start"
-      ],
-      "to": [
-        "gateway1"
-      ]
-    },
-    "service4": {
-      "from": [
-        "gateway1"
-      ],
-      "to": [
-        "gateway2"
-      ]
-    },
-    "end": {
-      "from": [
-        "gateway2"
-      ]
-    },
-    "service3": {
-      "from": [
-        "gateway1"
-      ],
-      "to": [
-        "gateway2"
-      ]
-    }
-  }
+  ]
 }

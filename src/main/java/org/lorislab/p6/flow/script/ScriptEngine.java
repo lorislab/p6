@@ -31,7 +31,7 @@ public class ScriptEngine {
 
     private static final SystemBean SYSTEM = new SystemBean();
 
-    public static boolean expression(String expression, Map<String, Object> data) {
+    public static boolean expression(String expression, Map data) {
         ELScript el = new ELScript();
         el.addVariable(VAR_SYSTEM, SYSTEM);
         el.addVariable(VAR_LOG, log);
@@ -39,7 +39,7 @@ public class ScriptEngine {
         return el.evaluateExpression(expression);
     }
 
-    public static Map<String, Object> runScript(String script, Map<String, Object> data) {
+    public static Map runScript(String script, Map data) {
         ELScript el = new ELScript();
         el.addVariable(VAR_SYSTEM, SYSTEM);
         el.addVariable(VAR_LOG, log);

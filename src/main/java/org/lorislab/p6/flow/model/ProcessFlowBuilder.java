@@ -61,13 +61,10 @@ public class ProcessFlowBuilder {
     private <T extends Node> T updateNode(T node, String name, Node... from) {
         node.setName(name);
         flow.getNodes().add(node);
-        Sequence seq = new Sequence();
-        flow.getSequence().put(name, seq);
         if (from != null) {
-            seq.addDirectionFrom(from);
+            node.getSequence().addDirectionFrom(from);
             for (Node f : from) {
-                Sequence s = flow.getSequence().get(f.getName());
-                s.addDirectionTo(node);
+                f.getSequence().addDirectionTo(node);
             }
         }
         return node;

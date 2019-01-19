@@ -1,6 +1,6 @@
 FROM lorislab/liquibase:3.6.2-1 as liquibase
 
-FROM jboss/wildfly:15.0.0.Final-1 as build
+FROM jboss/wildfly:15.0.1.Final as build
 
 # Switch the wildfly configuration to the standalone-full-ha.xml
 RUN cd /opt/jboss/wildfly/standalone/configuration/ \
@@ -11,7 +11,7 @@ RUN cd /opt/jboss/wildfly/standalone/configuration/ \
 COPY src/main/docker/ /tmp/docker
 RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/docker/wildfly/config.cli
 
-FROM jboss/wildfly:15.0.0.Final-1
+FROM jboss/wildfly:15.0.1.Final
 
 # Install the liquibase
 COPY --chown=jboss:root --from=liquibase /opt/liquibase /opt/liquibase

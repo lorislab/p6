@@ -19,14 +19,45 @@ package org.lorislab.p6.flow.model;
 import org.junit.Test;
 import org.lorislab.p6.client.service.ClientJsonService;
 import org.lorislab.p6.flow.model.task.ServiceTask;
-import org.lorislab.p6.json.ServerJsonService;
 
+import javax.json.JsonObject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JsonSerializerTest {
+
+    @Test
+    public void jsonTest() {
+        JsonbConfig config = new JsonbConfig()
+                .withFormatting(true);
+        Jsonb json = JsonbBuilder.create(config);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("key1", "1234");
+        data.put("key2", 1234);
+        data.put("key3", new ArrayList<String>(Arrays.asList("1","2")));
+        ServiceTask task = new ServiceTask();
+        task.setName("ASD");
+        data.put("serviceTask", task);
+
+        String text = json.toJson(data);
+        System.out.println(text);
+
+        Map object = json.fromJson(text, Map.class);
+
+        System.out.println(object);
+        System.out.println(object.getClass().getName());
+
+        Map<String, Object> map = (Map<String, Object>) object;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue() + " " + entry.getValue().getClass().getName());
+        }
+    }
 
     @Test
     public void serilizeExampleTest() {
@@ -40,24 +71,8 @@ public class JsonSerializerTest {
         task.setName("ASD");
         data.put("serviceTask", task);
 
-        String tmp2 = ClientJsonService.saveData(data);
+        String tmp2 = ClientJsonService.toString(data);
         System.out.println(tmp2);
-
-
-        Map<String, Object> nt = ServerJsonService.loadData(tmp2);
-        System.out.println(nt);
-        for (Map.Entry<String, Object> e : nt.entrySet()) {
-            System.out.println(e.getKey() + " - " +  e.getValue());
-        }
-        String tmp3 = ServerJsonService.saveData(nt);
-        System.out.println(tmp3);
-
-        Map<String, Object> data2 = ClientJsonService.loadData(tmp2);
-        for (Map.Entry<String, Object> e : data2.entrySet()) {
-            System.out.println(e.getKey() + " - " + e.getValue());
-        }
-
-
 
     }
 }

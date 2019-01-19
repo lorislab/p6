@@ -20,11 +20,22 @@ import lombok.ToString;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
 
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
 @Data
 @ToString(callSuper = true)
 public class ServiceTask extends Node {
 
     public ServiceTask() {
         super(NodeType.SERVICE_TASK);
+    }
+
+    public ServiceTask(JsonObject json) {
+        super(NodeType.SERVICE_TASK, json);
+    }
+
+    public static ServiceTask fromJson(JsonObject json) {
+        return new ServiceTask(json);
     }
 }

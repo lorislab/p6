@@ -79,7 +79,7 @@ public class ClientProcessService {
 
     private void sendMessage(TextMessage msg, Map<String, Object> data) throws Exception {
         if (data != null) {
-            String content = ClientJsonService.saveData(data);
+            String content = ClientJsonService.toString(data);
             msg.setText(content);
         }
         Queue queue = context.createQueue(ConfigService.QUEUE_CMD);

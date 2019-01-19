@@ -60,7 +60,7 @@ public class RuntimeProcess {
     }
 
     public Sequence getSequence(String name) {
-        return flow.getSequence().get(name);
+        return nodes.get(name).getSequence();
     }
 
     public Node getNode(String name) {

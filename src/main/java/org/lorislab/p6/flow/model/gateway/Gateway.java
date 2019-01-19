@@ -20,6 +20,10 @@ import lombok.ToString;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
 import java.util.Map;
 
 @Data
@@ -37,4 +41,23 @@ public abstract class Gateway extends Node {
         super(nodeType);
     }
 
+    @Override
+    public JsonObjectBuilder toJson() {
+        JsonObjectBuilder builder = super.toJson();
+        builder.add("sequenceFlow", sequenceFlow.name());
+        if (defaultSequence != null) {
+            builder.add("defaultSequence", defaultSequence);
+        }
+        return builder;
+    }
+
+    @Override
+    protected void updateJson(JsonObject json) {
+        super.updateJson(json);
+        sequenceFlow = SequenceFlow.valueOf(json.getString("sequenceFlow"));
+        JsonString obj = json.getJsonString("defaultSequence");
+        if (obj != null) {
+            defaultSequence = obj.getString();
+        }
+    }
 }

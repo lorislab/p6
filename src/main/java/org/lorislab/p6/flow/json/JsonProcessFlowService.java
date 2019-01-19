@@ -17,26 +17,36 @@ package org.lorislab.p6.flow.json;
 
 import org.lorislab.p6.flow.model.ProcessFlow;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonWriter;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
+import javax.json.stream.JsonGenerator;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class JsonProcessFlowService {
 
-    private static final Jsonb JSON;
+    private static final Map<String,Object> CONFIG;
 
     static {
-        JsonbConfig config = new JsonbConfig()
-                .withFormatting(true)
-                .withSerializers(new NodeSerializer())
-                .withDeserializers(new NodeDeserializer());
-        JSON = JsonbBuilder.create(config);
+        CONFIG = new HashMap<>();
+        CONFIG.put(JsonGenerator.PRETTY_PRINTING, true);
     }
 
     public static byte[] saveProcessFlow(ProcessFlow data) {
-        String tmp = JSON.toJson(data);
+        StringWriter sw = new StringWriter();
+        try (JsonWriter writer = Json.createWriterFactory(CONFIG).createWriter(sw)) {
+            writer.writeObject(data.toJson());
+        }
+        String tmp = sw.toString();
         return tmp.getBytes(StandardCharsets.UTF_8);
     }
 
@@ -46,6 +56,13 @@ public class JsonProcessFlowService {
     }
 
     public static ProcessFlow loadProcessFlow(String data) {
-        return JSON.fromJson(data, ProcessFlow.class);
+        ProcessFlow result = null;
+        if (data != null) {
+            try (JsonReader jsonReader = Json.createReader(new StringReader(data))) {
+                JsonObject jobj = jsonReader.readObject();
+                result = ProcessFlow.fromJson(jobj);
+            }
+        }
+        return result;
     }
 }

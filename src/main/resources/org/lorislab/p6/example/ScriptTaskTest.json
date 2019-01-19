@@ -3,49 +3,48 @@
   "processVersion": "1.0.0",
   "nodes": [
     {
-      "START_EVENT": {
-        "name": "start"
+      "name": "start",
+      "nodeType": "START_EVENT",
+      "sequence": {
+        "to": [
+          "scriptTask1"
+        ]
       }
     },
     {
-      "SCRIPT_TASK": {
-        "name": "scriptTask1",
-        "script": "params.a=\"text\";\nlog.info(\"test\", null);\nSystem.out.println(\"running script task\");"
+      "name": "scriptTask1",
+      "nodeType": "SCRIPT_TASK",
+      "script": "params.a=\"text\";\nlog.info(\"test\", null);\nSystem.out.println(\"running script task\");",
+      "sequence": {
+        "from": [
+          "start"
+        ],
+        "to": [
+          "scriptTask2"
+        ]
       }
     },
     {
-      "SCRIPT_TASK": {
-        "name": "scriptTask2",
-        "script": "System.out.println(\"Parameters: \" += params.a);"
+      "name": "scriptTask2",
+      "nodeType": "SCRIPT_TASK",
+      "script": "System.out.println(\"Parameters: \" += params.a);",
+      "sequence": {
+        "from": [
+          "scriptTask1"
+        ],
+        "to": [
+          "end"
+        ]
       }
     },
     {
-      "END_EVENT": {
-        "name": "end"
+      "name": "end",
+      "nodeType": "END_EVENT",
+      "sequence": {
+        "from": [
+          "scriptTask2"
+        ]
       }
     }
-  ],
-  "sequence": {
-    "start": {
-      "to": [
-        "scriptTask1"
-      ]
-    },
-    "scriptTask1": {
-      "from": [
-        "start"
-      ],
-      "to": [
-        "scriptTask2"
-      ]
-    },
-    "scriptTask2": {
-      "from": [
-        "scriptTask1"
-      ],
-      "to": [
-        "end"
-      ]
-    }
-  }
+  ]
 }

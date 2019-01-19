@@ -25,7 +25,6 @@ import org.lorislab.p6.flow.script.ScriptEngine;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 import org.lorislab.p6.jpa.service.ProcessTokenService;
-import org.lorislab.p6.json.ServerJsonService;
 import org.lorislab.p6.runtime.RuntimeProcess;
 
 import javax.ejb.EJB;
@@ -89,9 +88,9 @@ public class TaskExecutorService {
 
     public void scriptTask(ProcessToken token, RuntimeProcess runtimeProcess, ScriptTask task) throws Exception {
 
-        Map<String, Object> data = ServerJsonService.loadData(token);
-        Map<String, Object> result = ScriptEngine.runScript(task.getScript(), data);
-        token = ServerJsonService.saveData(token, result);
+        Map data = ServerJsonService.fromToken(token);
+        Map result = ScriptEngine.runScript(task.getScript(), data);
+        token = ServerJsonService.mergeData(token, result);
 
         // create token
         token.setPreviousName(token.getNodeName());

@@ -17,7 +17,6 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.ejb3.annotation.ClusteredSingleton;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
@@ -35,14 +34,13 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 @Slf4j
-@MessageDriven(
+@MessageDriven(name = "ProcessSingletonExecutorService",
         activationConfig = {
                 @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + ConfigService.QUEUE_SINGLETON),
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
                 @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1")
         }
 )
-@ClusteredSingleton
 public class ProcessSingletonExecutorService implements MessageListener {
 
     @EJB
