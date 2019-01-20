@@ -2,15 +2,6 @@ version: "3"
 
 services:
 
-  test:
-    container_name: test
-    image: jboss/wildfly:15.0.0.Final
-    ports:
-      - "8080:8080"
-      - "8787:8787"
-    networks:
-      - p6
-
   # Docker image for the P6
   p6:
     container_name: p6
@@ -21,6 +12,7 @@ services:
         DB_PWD: p6
         DEBUG: "true"
         DEBUG_PORT: "*:8787"
+    restart: on-failure
     ports: 
         - "8080:8080"
         - "8787:8787"
@@ -49,8 +41,8 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: p6@lorislab.org
       PGADMIN_DEFAULT_PASSWORD: p6
-    ports: 
-        - "8090:80"   
+    ports:
+        - "8090:80"
     volumes:
         - pgvolume:/var/lib/pgadmin
     networks:

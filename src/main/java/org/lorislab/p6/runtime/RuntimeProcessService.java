@@ -29,6 +29,10 @@ public class RuntimeProcessService {
 
     private Map<String, RuntimeProcess> processes = new ConcurrentHashMap<>();
 
+    public int getSize() {
+        return processes.size();
+    }
+
     public void addRuntimeProcess(RuntimeProcess process) {
         String key = createKey(process.getDefinition().getProcessId(),process.getDefinition().getProcessVersion());
         processes.put(key, process);

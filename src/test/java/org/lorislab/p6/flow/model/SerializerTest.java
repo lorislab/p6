@@ -16,7 +16,7 @@
 
 package org.lorislab.p6.flow.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.lorislab.p6.flow.json.JsonProcessFlowService;
 import org.lorislab.p6.flow.model.event.StartEvent;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;

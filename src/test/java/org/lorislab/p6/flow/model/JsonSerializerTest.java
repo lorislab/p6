@@ -16,11 +16,10 @@
 
 package org.lorislab.p6.flow.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.lorislab.p6.client.service.ClientJsonService;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 
-import javax.json.JsonObject;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;

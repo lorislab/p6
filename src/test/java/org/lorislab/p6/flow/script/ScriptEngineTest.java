@@ -17,8 +17,8 @@
 package org.lorislab.p6.flow.script;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,10 +34,10 @@ public class ScriptEngineTest {
         Map<String, Object> data = new HashMap<>();
         String tmp = loadFile("Expression.el");
         boolean result = ScriptEngine.expression(tmp, data);
-        Assert.assertFalse(result);
-        Assert.assertFalse(data.isEmpty());
-        Assert.assertEquals(1L, data.get("x"));
-        Assert.assertEquals(2L, data.get("y"));
+        Assertions.assertFalse(result);
+        Assertions.assertFalse(data.isEmpty());
+        Assertions.assertEquals(1L, data.get("x"));
+        Assertions.assertEquals(2L, data.get("y"));
     }
 
     @Test
@@ -45,10 +45,10 @@ public class ScriptEngineTest {
         Map<String, Object> data = new HashMap<>();
         String tmp = loadFile("Expression2.el");
         boolean result = ScriptEngine.expression(tmp, data);
-        Assert.assertTrue(result);
-        Assert.assertFalse(data.isEmpty());
-        Assert.assertEquals(3L, data.get("x"));
-        Assert.assertEquals(3L, data.get("y"));
+        Assertions.assertTrue(result);
+        Assertions.assertFalse(data.isEmpty());
+        Assertions.assertEquals(3L, data.get("x"));
+        Assertions.assertEquals(3L, data.get("y"));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class ScriptEngineTest {
         String tmp = loadFile("Simple.el");
         ScriptEngine.runScript(tmp, data);
 
-        Assert.assertFalse(data.isEmpty());
-        Assert.assertEquals("text", data.get("a"));
-        Assert.assertEquals(1L, data.get("x"));
+        Assertions.assertFalse(data.isEmpty());
+        Assertions.assertEquals("text", data.get("a"));
+        Assertions.assertEquals(1L, data.get("x"));
     }
 
     private String loadFile(String name) throws Exception {
