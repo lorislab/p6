@@ -16,6 +16,11 @@
 
 package org.lorislab.p6.rs;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.p6.config.ConfigService;
 import org.lorislab.p6.service.ServerJsonService;
@@ -30,10 +35,7 @@ import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,8 @@ import java.util.UUID;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Path("process")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class ProcessRestService {
 
     @Inject
@@ -54,8 +58,23 @@ public class ProcessRestService {
 
     @POST
     @Path("start/{processId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String startProcess(@PathParam("processId") String processId, Map<String, Object> data) throws Exception {
+    @Operation(summary = "Start process by processId",
+            tags = {"process"},
+            description = "Starts the new process instance by process ID.",
+            responses = {
+                    @ApiResponse(description = "The process instance ID.", content = @Content(
+                            schema = @Schema(type = "string", description = "The process instance ID")
+                    ))
+            })
+    public String startProcess(
+            @Parameter(
+                    description = "The process Id",
+                    schema = @Schema(
+                            type = "string",
+                            description = "param process ID"
+                    ),
+                    required = true)
+            @PathParam("processId") String processId, Map<String, Object> data) throws Exception {
         return commandService.startProcess(processId, null, data);
     }
 

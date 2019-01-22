@@ -68,6 +68,12 @@
             <version>5.4.0.Final</version>
             <scope>provided</scope>
         </dependency>
+        <!-- SWAGGER -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.0.6</version>
+        </dependency>
 
         <!-- TEST -->
         <dependency>
@@ -226,6 +232,43 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>openapi</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.swagger.core.v3</groupId>
+                        <artifactId>swagger-maven-plugin</artifactId>
+                        <version>2.0.6</version>
+                        <configuration>
+                            <outputFileName>openapi</outputFileName>
+                            <outputPath>${project.basedir}/src/main/resources/</outputPath>
+                            <outputFormat>JSONANDYAML</outputFormat>
+                            <resourcePackages>
+                                <package>org.lorislab.p6.rs</package>
+                            </resourcePackages>
+                            <prettyPrint>true</prettyPrint>
+                            <openapiFilePath>${project.basedir}/src/main/resources/openapi-info.json</openapiFilePath>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>resolve</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>io.swagger.core.v3</groupId>
+                                <artifactId>swagger-jaxrs2</artifactId>
+                                <version>2.0.7-SNAPSHOT</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>integration-test</id>
             <build>

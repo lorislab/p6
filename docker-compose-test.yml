@@ -2,6 +2,19 @@ version: "2"
 
 services:
 
+  # PostgresSQL database
+  postgresdb:
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+    command: postgres -c max_prepared_transactions=100
+    volumes:
+      - ./src/main/docker/db/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    environment:
+      POSTGRES_PASSWORD: p6
+    networks:
+      - p6
+
   # Docker image for the P6
   p6:
     image: lorislab/p6
@@ -12,19 +25,6 @@ services:
     ports: 
         - "8080:8080"
     restart: on-failure
-    networks:
-     - p6
-
-  # PostgresSQL database
-  postgresdb:
-    image: postgres:11.1
-    ports:
-        - "5432:5432"
-    command: postgres -c max_prepared_transactions=100
-    volumes:
-        - ./src/main/docker/db/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    environment:
-       POSTGRES_PASSWORD: p6
     networks:
      - p6
 

@@ -1,0 +1,233 @@
+openapi: 3.0.1
+info:
+  title: P6 process engine
+  description: This is P6 process engine REST interface api definition
+  contact:
+    email: team@lorislab.org
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+paths:
+  /process/start/{processId}:
+    post:
+      tags:
+      - process
+      summary: Start process by processId
+      description: Starts the new process instance by process ID.
+      operationId: startProcess
+      parameters:
+      - name: processId
+        in: path
+        description: The process Id
+        required: true
+        schema:
+          type: string
+          description: param process ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: object
+      responses:
+        default:
+          description: The process instance ID.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The process instance ID
+  /process/message/{processInstanceId}:
+    post:
+      operationId: sendMessage
+      parameters:
+      - name: processInstanceId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: object
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: string
+  /process/event/{processInstanceId}:
+    post:
+      operationId: sendEvent
+      parameters:
+      - name: processInstanceId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: string
+  /token/load:
+    get:
+      operationId: loadAll
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessTokenDTO'
+  /token/all:
+    delete:
+      operationId: deleteAll
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+  /token/query/all:
+    delete:
+      operationId: deleteQueryAll
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+  /token/{guid}:
+    put:
+      operationId: update
+      parameters:
+      - name: guid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessTokenDTO'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessTokenDTO'
+  /token:
+    get:
+      operationId: find
+      parameters:
+      - name: from
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: count
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessTokenDTO'
+    post:
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessTokenDTO'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessTokenDTO'
+  /runtime/process/count:
+    get:
+      operationId: getSize
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    ProcessTokenDTO:
+      type: object
+      properties:
+        persisted:
+          type: boolean
+        version:
+          type: integer
+          format: int32
+        guid:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+        modificationDate:
+          type: string
+          format: date-time
+        modificationUser:
+          type: string
+        parents:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        startNodeName:
+          type: string
+        nodeName:
+          type: string
+        previousName:
+          type: string
+        status:
+          type: string
+          enum:
+          - IN_EXECUTION
+          - FAILED
+          - FINISHED
+        data:
+          type: array
+          items:
+            type: string
+            format: byte
+        processInstanceId:
+          type: string
