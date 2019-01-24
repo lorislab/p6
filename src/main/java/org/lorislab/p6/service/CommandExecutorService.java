@@ -18,13 +18,10 @@ package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.jee.jpa.exception.ConstraintException;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.flow.json.JsonProcessFlowService;
-import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.ProcessFlow;
 import org.lorislab.p6.jpa.model.*;
-import org.lorislab.p6.jpa.model.enums.ProcessInstanceStatus;
-import org.lorislab.p6.jpa.model.enums.ProcessTokenStatus;
 import org.lorislab.p6.jpa.service.ProcessDefinitionService;
 import org.lorislab.p6.jpa.service.ProcessDeploymentService;
 import org.lorislab.p6.jpa.service.ProcessInstanceService;
@@ -33,16 +30,13 @@ import org.lorislab.p6.runtime.RuntimeProcessService;
 import org.lorislab.p6.util.DeploymentVersionUtil;
 
 import javax.ejb.*;
-import javax.inject.Inject;
 import javax.jms.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @MessageDriven(
         activationConfig = {
-                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + ConfigService.QUEUE_CMD),
+                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + MessageProperties.QUEUE_CMD),
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         }
 )
@@ -71,21 +65,21 @@ public class CommandExecutorService implements MessageListener {
     public void onMessage(Message message) {
         String cmd = null;
         try {
-            cmd = message.getStringProperty(ConfigService.MSG_CMD);
+            cmd = message.getStringProperty(MessageProperties.MSG_CMD);
             switch (cmd) {
-                case ConfigService.CMD_DEPLOY:
+                case MessageProperties.CMD_DEPLOY:
                     deploy(message);
                     break;
-                case ConfigService.CMD_START:
+                case MessageProperties.CMD_START:
                     start(message);
                     break;
-                case ConfigService.CMD_START_PROCESS:
+                case MessageProperties.CMD_START_PROCESS:
                     startProcess(message);
                     break;
-                case ConfigService.CMD_SEND_EVENT:
+                case MessageProperties.CMD_SEND_EVENT:
                     sendEvent(message);
                     break;
-                case ConfigService.CMD_SEND_MESSAGE:
+                case MessageProperties.CMD_SEND_MESSAGE:
                     sendMessage(message);
                     break;
                 default:
@@ -97,7 +91,7 @@ public class CommandExecutorService implements MessageListener {
     }
 
     private void start(Message message) throws Exception {
-        String guid = message.getStringProperty(ConfigService.MSG_PROCESS_DEF_GUID);
+        String guid = message.getStringProperty(MessageProperties.MSG_PROCESS_DEF_GUID);
         ProcessDefinition def = processDefinitionService.loadByGuid(guid);
         ProcessFlow flow = JsonProcessFlowService.loadProcessFlow(def.getContent().getData());
         def.setContent(null);
@@ -114,8 +108,8 @@ public class CommandExecutorService implements MessageListener {
     }
 
     private void startProcess(Message message) throws Exception {
-        String processId = message.getStringProperty(ConfigService.MSG_PROCESS_ID);
-        String processInstanceId = message.getStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID);
+        String processId = message.getStringProperty(MessageProperties.MSG_PROCESS_ID);
+        String processInstanceId = message.getStringProperty(MessageProperties.MSG_PROCESS_INSTANCE_ID);
         String data = message.getBody(String.class);
         commandService.startProcess(processId, processInstanceId, data);
     }
@@ -123,13 +117,13 @@ public class CommandExecutorService implements MessageListener {
     private void deploy(Message message) {
         try {
             int retry = 0;
-            if (message.propertyExists(ConfigService.JMS_RETRY_COUNT) ) {
-                retry = message.getIntProperty(ConfigService.JMS_RETRY_COUNT);
+            if (message.propertyExists(MessageProperties.JMS_RETRY_COUNT) ) {
+                retry = message.getIntProperty(MessageProperties.JMS_RETRY_COUNT);
             }
 
-            String application = message.getStringProperty(ConfigService.MSG_APP_NAME);
-            String module = message.getStringProperty(ConfigService.MSG_MODULE_NAME);
-            String resource = message.getStringProperty(ConfigService.MSG_RESOURCE_PATH);
+            String application = message.getStringProperty(MessageProperties.MSG_APP_NAME);
+            String module = message.getStringProperty(MessageProperties.MSG_MODULE_NAME);
+            String resource = message.getStringProperty(MessageProperties.MSG_RESOURCE_PATH);
             log.info("Start deployment {} - {} - {}", application, module, resource);
             String data = message.getBody(String.class);
 

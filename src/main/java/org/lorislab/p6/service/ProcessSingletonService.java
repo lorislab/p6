@@ -17,7 +17,7 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -35,7 +35,7 @@ public class ProcessSingletonService {
     private JMSContext context;
 
     public void sendSingletonMessage(Message message) throws Exception {
-        Queue singletonQueue = context.createQueue(ConfigService.QUEUE_SINGLETON);
+        Queue singletonQueue = context.createQueue(MessageProperties.QUEUE_SINGLETON);
         context.createProducer().send(singletonQueue, message);
     }
 }

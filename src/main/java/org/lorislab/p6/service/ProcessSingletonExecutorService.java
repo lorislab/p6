@@ -17,7 +17,7 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
 import org.lorislab.p6.jpa.model.ProcessInstance;
@@ -36,7 +36,7 @@ import javax.jms.MessageListener;
 @Slf4j
 @MessageDriven(name = "ProcessSingletonExecutorService",
         activationConfig = {
-                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + ConfigService.QUEUE_SINGLETON),
+                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + MessageProperties.QUEUE_SINGLETON),
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
                 @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "1")
         }
@@ -56,11 +56,11 @@ public class ProcessSingletonExecutorService implements MessageListener {
     public void onMessage(Message message) {
         int retry = 0;
         try {
-            if (message.propertyExists(ConfigService.JMS_RETRY_COUNT)) {
-                retry = message.getIntProperty(ConfigService.JMS_RETRY_COUNT);
+            if (message.propertyExists(MessageProperties.JMS_RETRY_COUNT)) {
+                retry = message.getIntProperty(MessageProperties.JMS_RETRY_COUNT);
             }
 
-            String guid = message.getStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID);
+            String guid = message.getStringProperty(MessageProperties.MSG_PROCESS_TOKEN_ID);
 
             ProcessToken token = processTokenService.loadByGuid(guid);
             ProcessInstance processInstance = token.getProcessInstance();
@@ -82,7 +82,7 @@ public class ProcessSingletonExecutorService implements MessageListener {
                     log.error("No supported singleton executor for node type: {}", node.getNodeType());
             }
         } catch (Exception ex) {
-            if (retry < ConfigService.MAX_REDELIVERY_COUNT) {
+            if (retry < MessageProperties.MAX_REDELIVERY_COUNT) {
                 log.error("Error execute singleton gateway the token. '{}' Retry: {} ", ex.getMessage(), retry);
                 throw new JMSRetryException("Error execute singleton gateway the token. Retry: " + retry);
             }

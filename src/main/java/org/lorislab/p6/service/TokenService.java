@@ -17,7 +17,7 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.jpa.model.ProcessInstance;
 import org.lorislab.p6.jpa.model.ProcessToken;
 
@@ -38,7 +38,7 @@ public class TokenService {
     private JMSContext context;
 
     public void sendTokenMessages(ProcessInstance processInstance, List<ProcessToken> tokens) throws Exception {
-        Queue tokenQueue = context.createQueue(ConfigService.QUEUE_TOKEN);
+        Queue tokenQueue = context.createQueue(MessageProperties.QUEUE_TOKEN);
         JMSProducer producer = context.createProducer();
         for (ProcessToken token : tokens) {
             Message tokenMessage = createTokenMessage(processInstance, token);
@@ -47,7 +47,7 @@ public class TokenService {
     }
 
     public void sendTokenMessage(ProcessInstance processInstance, ProcessToken token) throws Exception {
-        Queue tokenQueue = context.createQueue(ConfigService.QUEUE_TOKEN);
+        Queue tokenQueue = context.createQueue(MessageProperties.QUEUE_TOKEN);
         JMSProducer producer = context.createProducer();
         Message tokenMessage = createTokenMessage(processInstance, token);
         producer.send(tokenQueue, tokenMessage);
@@ -55,10 +55,10 @@ public class TokenService {
 
     private Message createTokenMessage(ProcessInstance processInstance, ProcessToken token) throws Exception {
         Message tokenMessage = context.createMessage();
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_ID, processInstance.getProcessId());
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
-        tokenMessage.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, token.getGuid());
+        tokenMessage.setStringProperty(MessageProperties.MSG_PROCESS_ID, processInstance.getProcessId());
+        tokenMessage.setStringProperty(MessageProperties.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
+        tokenMessage.setStringProperty(MessageProperties.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
+        tokenMessage.setStringProperty(MessageProperties.MSG_PROCESS_TOKEN_ID, token.getGuid());
         log.info("\n#######################\n{} -> {}\n#######################", token.getPreviousName(), token.getNodeName());
         return tokenMessage;
     }

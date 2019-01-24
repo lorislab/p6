@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.service.ServerJsonService;
 import org.lorislab.p6.service.CommandService;
 
@@ -37,7 +37,6 @@ import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -83,9 +82,9 @@ public class ProcessRestService {
     public String sendMessage(@PathParam("processInstanceId") String processInstanceId, Map<String, Object> data) throws Exception {
         String messageId = UUID.randomUUID().toString();
         TextMessage msg = context.createTextMessage();
-        msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_SEND_MESSAGE);
-        msg.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstanceId);
-        msg.setStringProperty(ConfigService.MSG_PROCESS_MESSAGE_ID, messageId);
+        msg.setStringProperty(MessageProperties.MSG_CMD, MessageProperties.CMD_SEND_MESSAGE);
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_INSTANCE_ID, processInstanceId);
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_MESSAGE_ID, messageId);
         sendMessage(msg, data);
         return messageId;
     }
@@ -95,10 +94,10 @@ public class ProcessRestService {
     public String sendEvent(@PathParam("processInstanceId") String processInstanceId, Object data) throws Exception {
         String eventId = UUID.randomUUID().toString();
         TextMessage msg = context.createTextMessage();
-        msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_SEND_MESSAGE);
-        msg.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstanceId);
-        msg.setStringProperty(ConfigService.MSG_PROCESS_EVENT_ID, eventId);
-        Map<String, Object> tmp = Map.of(ConfigService.DATA_KEY_EVENT_DATA, data);
+        msg.setStringProperty(MessageProperties.MSG_CMD, MessageProperties.CMD_SEND_MESSAGE);
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_INSTANCE_ID, processInstanceId);
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_EVENT_ID, eventId);
+        Map<String, Object> tmp = Map.of(MessageProperties.DATA_KEY_EVENT_DATA, data);
         sendMessage(msg, tmp);
         return eventId;
     }
@@ -108,7 +107,7 @@ public class ProcessRestService {
             String content = ServerJsonService.toString(data);
             msg.setText(content);
         }
-        Queue queue = context.createQueue(ConfigService.QUEUE_CMD);
+        Queue queue = context.createQueue(MessageProperties.QUEUE_CMD);
         context.createProducer().send(queue, msg);
     }
 }

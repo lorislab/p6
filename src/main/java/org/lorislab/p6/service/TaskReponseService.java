@@ -17,7 +17,7 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.NodeType;
 import org.lorislab.p6.flow.model.task.ServiceTask;
@@ -34,7 +34,7 @@ import javax.jms.MessageListener;
 @Slf4j
 @MessageDriven(
         activationConfig = {
-                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + ConfigService.QUEUE_RESPONSE),
+                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + MessageProperties.QUEUE_RESPONSE),
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         }
 )
@@ -53,11 +53,11 @@ public class TaskReponseService implements MessageListener {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void onMessage(Message message) {
         try {
-            String processId = message.getStringProperty(ConfigService.MSG_PROCESS_ID);
-            String processVersion = message.getStringProperty(ConfigService.MSG_PROCESS_VERSION);
-            String processInstanceId = message.getStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID);
-            String tokenId = message.getStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID);
-            String serviceTaskName = message.getStringProperty(ConfigService.MSG_PROCESS_TOKEN_SERVICE_TASK);
+            String processId = message.getStringProperty(MessageProperties.MSG_PROCESS_ID);
+            String processVersion = message.getStringProperty(MessageProperties.MSG_PROCESS_VERSION);
+            String processInstanceId = message.getStringProperty(MessageProperties.MSG_PROCESS_INSTANCE_ID);
+            String tokenId = message.getStringProperty(MessageProperties.MSG_PROCESS_TOKEN_ID);
+            String serviceTaskName = message.getStringProperty(MessageProperties.MSG_PROCESS_TOKEN_SERVICE_TASK);
 
             ProcessToken token = processTokenService.loadByGuid(tokenId);
             ServiceTask serviceTask = null;

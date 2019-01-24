@@ -23,46 +23,46 @@ import javax.jms.JMSDestinationDefinitions;
 @JMSDestinationDefinitions(
         value = {
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_EXEC,
+                        name = "java:/queue/" + MessageProperties.QUEUE_EXEC,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_EXEC,
+                        destinationName = MessageProperties.QUEUE_EXEC,
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_SINGLETON,
+                        name = "java:/queue/" + MessageProperties.QUEUE_SINGLETON,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_SINGLETON,
+                        destinationName = MessageProperties.QUEUE_SINGLETON,
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_REQUEST,
+                        name = "java:/queue/" + MessageProperties.QUEUE_REQUEST,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_REQUEST,
+                        destinationName = MessageProperties.QUEUE_REQUEST,
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_RESPONSE,
+                        name = "java:/queue/" + MessageProperties.QUEUE_RESPONSE,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_RESPONSE,
+                        destinationName = MessageProperties.QUEUE_RESPONSE,
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_CMD,
+                        name = "java:/queue/" + MessageProperties.QUEUE_CMD,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_CMD,
+                        destinationName = MessageProperties.QUEUE_CMD,
                         properties= {"redelivery-limit=1"}
                 ),
                 @JMSDestinationDefinition(
-                        name = "java:/queue/" + ConfigService.QUEUE_TOKEN,
+                        name = "java:/queue/" + MessageProperties.QUEUE_TOKEN,
                         interfaceName = "javax.jms.Queue",
-                        destinationName = ConfigService.QUEUE_TOKEN,
+                        destinationName = MessageProperties.QUEUE_TOKEN,
                         properties= {"max-delivery-attempts=1"}
                 )
         }
 )
 @Startup
 @Singleton
-public class ConfigService {
+public class MessageProperties {
 
     public static final String JMS_RETRY_COUNT = "JMSXDeliveryCount";
 
@@ -83,8 +83,6 @@ public class ConfigService {
     public static final String MSG_MODULE_NAME = "P6_MODULE_NAME";
 
     public static final String MSG_RESOURCE_PATH = "P6_RESOURCE_PATH";
-
-    public static final String DEPLOYMENT_DESCRIPTOR = "/p6.properties";
 
     public static final String MSG_CMD = "P6_CMD";
 
@@ -116,10 +114,6 @@ public class ConfigService {
 
     public static final String DATA_KEY_EVENT_DATA = "P6_EVENT_DATA";
 
-
     public static final int MAX_REDELIVERY_COUNT = 2;
 
-    public static final String MSG_SINGLETON_CMD = "P6_SINGLETON_CMD";
-
-    public static final String CMD_SINGLETON_PARALLEL_GATEWAY = "CMD_SINGLETON_PARALLEL_GATEWAY";
 }

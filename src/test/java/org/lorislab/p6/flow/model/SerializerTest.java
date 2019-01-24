@@ -39,7 +39,7 @@ public class SerializerTest {
     @Test
     public void serilizeExampleTest() {
         ProcessFlowBuilder builder = new ProcessFlowBuilder();
-        builder.setProcessId("org.lorislab.p6.example.Test1");
+        builder.setProcessId("org.lorislab.p6.org.lorislab.p6.example.Test1");
         builder.setProcessVersion("1.0.0");
 
         StartEvent s = builder.createStartEvent("start");
@@ -63,7 +63,7 @@ public class SerializerTest {
     @Test
     public void serilizeTest() {
         ProcessFlowBuilder builder = new ProcessFlowBuilder();
-        builder.setProcessId("org.lorislab.p6.example.Test1");
+        builder.setProcessId("org.lorislab.p6.org.lorislab.p6.example.Test1");
         builder.setProcessVersion("1.0.0");
 
         StartEvent s = builder.createStartEvent("start");

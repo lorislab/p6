@@ -17,7 +17,7 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.jpa.model.ProcessDeployment;
 import org.lorislab.p6.jpa.model.ProcessInstance;
@@ -123,7 +123,7 @@ public class CommandService {
 
     public void cmdStart(List<ProcessDeployment> deployments) throws Exception {
         if (deployments != null && !deployments.isEmpty()) {
-            Queue cmd = context.createQueue(ConfigService.QUEUE_CMD);
+            Queue cmd = context.createQueue(MessageProperties.QUEUE_CMD);
             JMSProducer producer = context.createProducer();
             for (int i = 0; i < deployments.size(); i++) {
                 ProcessDeployment deployment = deployments.get(i);
@@ -134,7 +134,7 @@ public class CommandService {
     }
 
     public void cmdStart(ProcessDeployment deployment) throws Exception {
-        Queue cmd = context.createQueue(ConfigService.QUEUE_CMD);
+        Queue cmd = context.createQueue(MessageProperties.QUEUE_CMD);
         JMSProducer producer = context.createProducer();
         Message msg = createStartMessage(deployment);
         producer.send(cmd, msg);
@@ -142,10 +142,10 @@ public class CommandService {
 
     private Message createStartMessage(ProcessDeployment deployment) throws Exception {
         Message msg = context.createMessage();
-        msg.setStringProperty(ConfigService.MSG_CMD, ConfigService.CMD_START);
-        msg.setStringProperty(ConfigService.MSG_PROCESS_DEF_GUID, deployment.getProcessDefinitionGuid());
-        msg.setStringProperty(ConfigService.MSG_PROCESS_ID, deployment.getProcessId());
-        msg.setStringProperty(ConfigService.MSG_PROCESS_VERSION, deployment.getProcessVersion());
+        msg.setStringProperty(MessageProperties.MSG_CMD, MessageProperties.CMD_START);
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_DEF_GUID, deployment.getProcessDefinitionGuid());
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_ID, deployment.getProcessId());
+        msg.setStringProperty(MessageProperties.MSG_PROCESS_VERSION, deployment.getProcessVersion());
         return msg;
     }
 }

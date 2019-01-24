@@ -17,11 +17,10 @@
 package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.flow.model.Node;
 import org.lorislab.p6.flow.model.event.EndEvent;
 import org.lorislab.p6.flow.model.event.StartEvent;
-import org.lorislab.p6.flow.model.gateway.Gateway;
 import org.lorislab.p6.flow.model.gateway.ParallelGateway;
 import org.lorislab.p6.flow.model.task.ScriptTask;
 import org.lorislab.p6.flow.model.task.ServiceTask;
@@ -36,12 +35,10 @@ import org.lorislab.p6.service.exception.JMSRetryException;
 import javax.ejb.*;
 import javax.jms.*;
 
-import static org.lorislab.p6.flow.model.gateway.SequenceFlow.CONVERGING;
-
 @Slf4j
 @MessageDriven(
         activationConfig = {
-                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + ConfigService.QUEUE_TOKEN),
+                @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/" + MessageProperties.QUEUE_TOKEN),
                 @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
         }
 )
@@ -73,11 +70,11 @@ public class TokenExecutorService implements MessageListener {
     public void onMessage(Message message) {
         int retry = 0;
         try {
-            if (message.propertyExists(ConfigService.JMS_RETRY_COUNT)) {
-                retry = message.getIntProperty(ConfigService.JMS_RETRY_COUNT);
+            if (message.propertyExists(MessageProperties.JMS_RETRY_COUNT)) {
+                retry = message.getIntProperty(MessageProperties.JMS_RETRY_COUNT);
             }
 
-            String guid = message.getStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID);
+            String guid = message.getStringProperty(MessageProperties.MSG_PROCESS_TOKEN_ID);
 
             ProcessToken token = processTokenService.loadByGuid(guid);
             ProcessInstance processInstance = token.getProcessInstance();
@@ -115,7 +112,7 @@ public class TokenExecutorService implements MessageListener {
                     log.error("No supported node type: {}", node.getNodeType());
             }
         } catch (Exception ex) {
-            if (retry < ConfigService.MAX_REDELIVERY_COUNT) {
+            if (retry < MessageProperties.MAX_REDELIVERY_COUNT) {
                 log.error("Error executeGateway the token. '{}' Retry: {} ", ex.getMessage(), retry);
                 throw new JMSRetryException("Error executeGateway the token. Retry: " + retry);
             }

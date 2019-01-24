@@ -18,7 +18,7 @@ package org.lorislab.p6.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lorislab.jee.annotation.LoggerService;
-import org.lorislab.p6.config.ConfigService;
+import org.lorislab.p6.config.MessageProperties;
 import org.lorislab.p6.flow.model.task.ScriptTask;
 import org.lorislab.p6.flow.model.task.ServiceTask;
 import org.lorislab.p6.flow.script.ScriptEngine;
@@ -75,14 +75,14 @@ public class TaskExecutorService {
             content = new String(token.getData(), StandardCharsets.UTF_8);
         }
         TextMessage request = context.createTextMessage(content);
-        request.setStringProperty(ConfigService.MSG_PROCESS_ID, processInstance.getProcessId());
-        request.setStringProperty(ConfigService.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
-        request.setStringProperty(ConfigService.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
-        request.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_ID, token.getGuid());
-        request.setStringProperty(ConfigService.MSG_PROCESS_TOKEN_SERVICE_TASK, token.getNodeName());
+        request.setStringProperty(MessageProperties.MSG_PROCESS_ID, processInstance.getProcessId());
+        request.setStringProperty(MessageProperties.MSG_PROCESS_VERSION, processInstance.getProcessVersion());
+        request.setStringProperty(MessageProperties.MSG_PROCESS_INSTANCE_ID, processInstance.getGuid());
+        request.setStringProperty(MessageProperties.MSG_PROCESS_TOKEN_ID, token.getGuid());
+        request.setStringProperty(MessageProperties.MSG_PROCESS_TOKEN_SERVICE_TASK, token.getNodeName());
 
         // send request to the application.
-        Queue queue = context.createQueue(ConfigService.QUEUE_REQUEST);
+        Queue queue = context.createQueue(MessageProperties.QUEUE_REQUEST);
         context.createProducer().send(queue, request);
     }
 

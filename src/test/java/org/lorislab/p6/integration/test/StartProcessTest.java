@@ -58,7 +58,7 @@ public class StartProcessTest {
         Response response = RestAssured.given()
                 .header("Content-Type", "application/json")
                 .body(request)
-                .post("/process/start/{processId}", "org.lorislab.p6.example.Test2");
+                .post("/process/start/{processId}", "org.lorislab.p6.org.lorislab.p6.example.Test2");
         log.info("Start process instance: {}", response.asString());
     }
 }
